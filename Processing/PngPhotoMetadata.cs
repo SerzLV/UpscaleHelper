@@ -178,7 +178,7 @@ internal static class PngPhotoMetadata
                 ushort tag = ReadShort(entry);
                 ushort format = ReadShort(entry + 2);
                 if (ReadLong(entry + 4) != 1) continue;
-                if (tag == 0x8769 && format == 4)
+                if (tag == 0x8769 && format is 4 or 13)
                 {
                     photoOffset = (int)ReadLong(entry + 8);
                     continue;

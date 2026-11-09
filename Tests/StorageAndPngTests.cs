@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using UpscaleHelper.Infrastructure;
 using UpscaleHelper.Processing;
 
@@ -88,6 +89,27 @@ public class StorageAndPngTests
         Assert.Equal(1, tiff[18]);
         Assert.Equal(new byte[4], tiff[^4..]);
         Assert.False(PngPhotoMetadata.NormalizeExif(tiff[..12], 900, 960));
+    }
+
+    [Theory]
+    [InlineData(4)]  // LONG
+    [InlineData(13)] // IFD
+    public void UpdatesDimensionsInNestedExifDirectory(ushort pointerType)
+    {
+        byte[] tiff = Convert.FromHexString(
+            "49492A0008000000" +             // TIFF header, first directory at offset 8
+            "010069870400010000001A000000" + // Exif IFD pointer to offset 26
+            "00000000" +                     // No next directory
+            "0200" +                         // Two Exif entries
+            "02A0030001000000A0000000" +     // PixelXDimension = 160 (SHORT)
+            "03A004000100000040010000" +     // PixelYDimension = 320 (LONG)
+            "00000000");
+        BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(12), pointerType);
+
+        Assert.True(PngPhotoMetadata.NormalizeExif(tiff, 320, 640));
+
+        Assert.Equal(320, BinaryPrimitives.ReadUInt16LittleEndian(tiff.AsSpan(36)));
+        Assert.Equal(640u, BinaryPrimitives.ReadUInt32LittleEndian(tiff.AsSpan(48)));
     }
 }
 

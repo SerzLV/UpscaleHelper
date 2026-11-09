@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="StudioEyebrow" xml:space="preserve"><value>СТУДИЯ УВЕЛИЧЕНИЯ</value></data>
+  <data name="PhotosAndVideos" xml:space="preserve"><value>Фото и видео</value></data>
+  <data name="MainSubtitle" xml:space="preserve"><value>Увеличивайте разрешение в 2 или 4 раза на своём ПК.</value></data>
+  <data name="CompareFiles" xml:space="preserve"><value>Сравнить файлы</value></data>
+  <data name="CompareResult" xml:space="preserve"><value>Сравнить</value></data>
+  <data name="CompareResultTip" xml:space="preserve"><value>Сравнить готовое видео с оригиналом</value></data>
+  <data name="ComparisonFileMissing" xml:space="preserve"><value>Один из файлов больше не найден. Выберите его снова.</value></data>
+  <data name="CompareFilesTip" xml:space="preserve"><value>Открыть оригинал и готовый результат (Ctrl+Shift+C)</value></data>
+  <data name="AddFilesTip" xml:space="preserve"><value>Добавить файлы (Ctrl+O)</value></data>
+  <data name="AddFiles" xml:space="preserve"><value>Добавить файлы</value></data>
+  <data name="Remove" xml:space="preserve"><value>Убрать</value></data>
+  <data name="RemoveTip" xml:space="preserve"><value>Убрать выбранный файл из очереди (Delete)</value></data>
+  <data name="Queue" xml:space="preserve"><value>Очередь</value></data>
+  <data name="DropFiles" xml:space="preserve"><value>Перетащите сюда файлы</value></data>
+  <data name="FileTypesHint" xml:space="preserve"><value>JPG, PNG, WebP, MP4, MKV и другие</value></data>
+  <data name="FileQueue" xml:space="preserve"><value>Очередь файлов</value></data>
+  <data name="Reveal" xml:space="preserve"><value>Показать</value></data>
+  <data name="RevealTip" xml:space="preserve"><value>Показать результат в проводнике</value></data>
+  <data name="Details" xml:space="preserve"><value>Подробнее</value></data>
+  <data name="Retry" xml:space="preserve"><value>Повторить</value></data>
+  <data name="FileProgress" xml:space="preserve"><value>Прогресс файла</value></data>
+  <data name="PreviewClip" xml:space="preserve"><value>Пробный фрагмент</value></data>
+  <data name="PreviewClipTip" xml:space="preserve"><value>Сравнить видео в движении (Ctrl+P)</value></data>
+  <data name="StartTip" xml:space="preserve"><value>Запустить обработку (F5)</value></data>
+  <data name="CancelProcessing" xml:space="preserve"><value>Отменить обработку</value></data>
+  <data name="Settings" xml:space="preserve"><value>Параметры</value></data>
+  <data name="ScaleHeading" xml:space="preserve"><value>01 / МАСШТАБ</value></data>
+  <data name="Scale" xml:space="preserve"><value>Масштаб</value></data>
+  <data name="ScaleFourTip" xml:space="preserve"><value>Для 4× выберите «Детализация» или «Анимация»</value></data>
+  <data name="ModelHeading" xml:space="preserve"><value>02 / МОДЕЛЬ</value></data>
+  <data name="UpscaleModel" xml:space="preserve"><value>Модель апскейла</value></data>
+  <data name="DetailMode" xml:space="preserve"><value>Детализация</value></data>
+  <data name="FastMode" xml:space="preserve"><value>Быстрый 2×</value></data>
+  <data name="AnimationMode" xml:space="preserve"><value>Анимация</value></data>
+  <data name="SaveHeading" xml:space="preserve"><value>03 / СОХРАНЕНИЕ</value></data>
+  <data name="ChooseFolder" xml:space="preserve"><value>Выбрать папку</value></data>
+  <data name="Reset" xml:space="preserve"><value>Сбросить</value></data>
+  <data name="OutputFormats" xml:space="preserve"><value>Фото → PNG     Видео → MP4</value></data>
+  <data name="ComparisonProgress" xml:space="preserve"><value>Прогресс подготовки сравнения</value></data>
+  <data name="CompareReadyFiles" xml:space="preserve"><value>Сравнить готовые файлы</value></data>
+  <data name="ChoosePair" xml:space="preserve"><value>Выберите два фото или два видео.</value></data>
+  <data name="OriginalTag" xml:space="preserve"><value>ОРИГИНАЛ</value></data>
+  <data name="Browse" xml:space="preserve"><value>Выбрать…</value></data>
+  <data name="ChooseOriginal" xml:space="preserve"><value>Выбрать оригинал</value></data>
+  <data name="NoFileSelected" xml:space="preserve"><value>Файл не выбран</value></data>
+  <data name="EnhancedTag" xml:space="preserve"><value>УЛУЧШЕННЫЙ ФАЙЛ</value></data>
+  <data name="ChooseEnhanced" xml:space="preserve"><value>Выбрать улучшенный файл</value></data>
+  <data name="Duration" xml:space="preserve"><value>Длительность</value></data>
+  <data name="ComparisonDuration" xml:space="preserve"><value>Длительность сравнения</value></data>
+  <data name="WholeVideo" xml:space="preserve"><value>Всё видео</value></data>
+  <data name="FiveSeconds" xml:space="preserve"><value>5 секунд</value></data>
+  <data name="TenSeconds" xml:space="preserve"><value>10 секунд</value></data>
+  <data name="ClipStart" xml:space="preserve"><value>Начало фрагмента</value></data>
+  <data name="ShorterVideo" xml:space="preserve"><value>Если длительность видео отличается, сравнение закончится вместе с более коротким.</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="OpenComparison" xml:space="preserve"><value>Открыть сравнение</value></data>
+  <data name="ComparisonMode" xml:space="preserve"><value>Режим сравнения</value></data>
+  <data name="SideBySide" xml:space="preserve"><value>Рядом</value></data>
+  <data name="Wipe" xml:space="preserve"><value>Шторка</value></data>
+  <data name="WipeUnavailable" xml:space="preserve"><value>Нужны оригинал и результат</value></data>
+  <data name="SharedZoom" xml:space="preserve"><value>Общий зум</value></data>
+  <data name="FitResetTip" xml:space="preserve"><value>Вписать изображения в панели и сбросить положение</value></data>
+  <data name="NativeResultTip" xml:space="preserve"><value>Один пиксель результата на пиксель экрана</value></data>
+  <data name="Comparison" xml:space="preserve"><value>Сравнение</value></data>
+  <data name="LoadMedia" xml:space="preserve"><value>Загрузите фото или видео</value></data>
+  <data name="Original" xml:space="preserve"><value>Оригинал</value></data>
+  <data name="Result" xml:space="preserve"><value>Результат</value></data>
+  <data name="ResultTag" xml:space="preserve"><value>РЕЗУЛЬТАТ</value></data>
+  <data name="Divider" xml:space="preserve"><value>Граница сравнения</value></data>
+  <data name="DividerTip" xml:space="preserve"><value>Перетащите границу или используйте ← и →</value></data>
+  <data name="PhotoComparison" xml:space="preserve"><value>Сравнение фото</value></data>
+  <data name="ReadyPhotoComparison" xml:space="preserve"><value>Сравнение готовых фото</value></data>
+  <data name="Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="ProcessingError" xml:space="preserve"><value>Ошибка обработки</value></data>
+  <data name="ErrorDetails" xml:space="preserve"><value>Подробности ошибки</value></data>
+  <data name="VideoComparison" xml:space="preserve"><value>Сравнение видео</value></data>
+  <data name="PlaybackComparison" xml:space="preserve"><value>Сравнение в движении</value></data>
+  <data name="Loading" xml:space="preserve"><value>Загрузка…</value></data>
+  <data name="FramePair" xml:space="preserve"><value>Оригинал и результат на выбранном кадре</value></data>
+  <data name="PreviewTimeTip" xml:space="preserve"><value>Время от начала пробного фрагмента</value></data>
+  <data name="FrameTimeline" xml:space="preserve"><value>Шкала кадров</value></data>
+  <data name="Pause" xml:space="preserve"><value>Пауза</value></data>
+  <data name="PreviousButton" xml:space="preserve"><value>← Кадр</value></data>
+  <data name="PreviousFrame" xml:space="preserve"><value>Предыдущий кадр</value></data>
+  <data name="PreviousFrameTip" xml:space="preserve"><value>Предыдущий кадр (←)</value></data>
+  <data name="NextButton" xml:space="preserve"><value>Кадр →</value></data>
+  <data name="NextFrame" xml:space="preserve"><value>Следующий кадр</value></data>
+  <data name="NextFrameTip" xml:space="preserve"><value>Следующий кадр (→)</value></data>
+  <data name="Unmute" xml:space="preserve"><value>Включить звук</value></data>
+  <data name="Start" xml:space="preserve"><value>Начало</value></data>
+  <data name="ClipDuration" xml:space="preserve"><value>Длительность фрагмента</value></data>
+  <data name="SegmentHelp" xml:space="preserve"><value>Введите секунды или время, например 1:23. Используются настройки апскейла из основного окна.</value></data>
+  <data name="Prepare" xml:space="preserve"><value>Подготовить</value></data>
+  <data name="PreparingComparison" xml:space="preserve"><value>Подготовка видео для сравнения</value></data>
+  <data name="FrameCountError" xml:space="preserve"><value>Не удалось определить число кадров в пробном фрагменте.</value></data>
+  <data name="InvalidPngFrame" xml:space="preserve"><value>FFmpeg вернул повреждённый PNG-кадр.</value></data>
+  <data name="MissingOutput" xml:space="preserve"><value>Обработка не создала выходной файл.</value></data>
+  <data name="PreparingImage" xml:space="preserve"><value>Подготовка изображения</value></data>
+  <data name="GpuUpscale" xml:space="preserve"><value>Увеличение на GPU</value></data>
+  <data name="MissingImageOutput" xml:space="preserve"><value>Движок апскейла не создал изображение.</value></data>
+  <data name="SavingPng" xml:space="preserve"><value>Сохранение PNG</value></data>
+  <data name="ReadingVideo" xml:space="preserve"><value>Чтение параметров видео</value></data>
+  <data name="InvalidSegment" xml:space="preserve"><value>Укажите начало и положительную длину фрагмента.</value></data>
+  <data name="SegmentPastEnd" xml:space="preserve"><value>Начало фрагмента находится за концом видео.</value></data>
+  <data name="NoDecodedFrames" xml:space="preserve"><value>Не удалось прочитать ни одного видеокадра.</value></data>
+  <data name="PhotoTag" xml:space="preserve"><value>ФОТО</value></data>
+  <data name="VideoTag" xml:space="preserve"><value>ВИДЕО</value></data>
+  <data name="Running" xml:space="preserve"><value>Обработка</value></data>
+  <data name="Done" xml:space="preserve"><value>Готово</value></data>
+  <data name="Error" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="Canceled" xml:space="preserve"><value>Отменено</value></data>
+  <data name="Queued" xml:space="preserve"><value>В очереди</value></data>
+  <data name="SelectQueueFile" xml:space="preserve"><value>Выберите файл в очереди</value></data>
+  <data name="ResultPlaceholder" xml:space="preserve"><value>Появится после обработки</value></data>
+  <data name="LoadingPreview" xml:space="preserve"><value>Загрузка предпросмотра…</value></data>
+  <data name="NoImageInFile" xml:space="preserve"><value>В файле нет изображения.</value></data>
+  <data name="CannotOpenFile" xml:space="preserve"><value>Не удалось открыть файл</value></data>
+  <data name="InvalidTimecode" xml:space="preserve"><value>Введите секунды, М:СС или Ч:ММ:СС.</value></data>
+  <data name="OutputFolderDialog" xml:space="preserve"><value>Куда сохранить результаты</value></data>
+  <data name="MissingResult" xml:space="preserve"><value>Результат больше не найден в папке.</value></data>
+  <data name="AllFiles" xml:space="preserve"><value>Все файлы</value></data>
+  <data name="NoVideoStream" xml:space="preserve"><value>В файле нет видеодорожки.</value></data>
+  <data name="HdrUnsupported" xml:space="preserve"><value>Эта версия обрабатывает SDR. Для HDR требуется отдельный цветовой процесс.</value></data>
+  <data name="FrameUnavailable" xml:space="preserve"><value>В видео нет выбранного кадра.</value></data>
+  <data name="PairSegmentPastEnd" xml:space="preserve"><value>Начало фрагмента находится за концом одного из видео.</value></data>
+  <data name="UpscalingFrames" xml:space="preserve"><value>Увеличение кадров на GPU</value></data>
+  <data name="SavingMp4" xml:space="preserve"><value>Сохранение MP4</value></data>
+  <data name="RemoveAudio" xml:space="preserve"><value>Убрать звук</value></data>
+  <data name="RemoveAudioTip" xml:space="preserve"><value>Сохранить видео из очереди без аудиодорожек</value></data>
+  <data name="WipeTip" xml:space="preserve"><value>Наложить оригинал и результат</value></data>
+  <data name="OpenMedia" xml:space="preserve"><value>Откройте фото или видео</value></data>
+  <data name="ReducedPreviewTip" xml:space="preserve"><value>Для этого файла используется уменьшенный предпросмотр</value></data>
+  <data name="NativeOriginalTip" xml:space="preserve"><value>Один пиксель оригинала на пиксель экрана</value></data>
+  <data name="Fit" xml:space="preserve"><value>Вписать</value></data>
+  <data name="PickOriginalTitle" xml:space="preserve"><value>Выберите оригинал</value></data>
+  <data name="PickEnhancedTitle" xml:space="preserve"><value>Выберите улучшенный файл</value></data>
+  <data name="UnsupportedFile" xml:space="preserve"><value>Выберите файл поддерживаемого формата.</value></data>
+  <data name="MismatchedPair" xml:space="preserve"><value>Для сравнения выберите два фото или два видео.</value></data>
+  <data name="DistinctFiles" xml:space="preserve"><value>Выберите два разных файла.</value></data>
+  <data name="Ready" xml:space="preserve"><value>Готов к работе</value></data>
+  <data name="RepeatSelected" xml:space="preserve"><value>Повторить выбранный</value></data>
+  <data name="StartProcessing" xml:space="preserve"><value>Начать обработку</value></data>
+  <data name="FastHint" xml:space="preserve"><value>Waifu2x Photo для реальной съёмки. Масштаб 2×.</value></data>
+  <data name="AnimationHint" xml:space="preserve"><value>Для аниме, иллюстраций и рисованных кадров.</value></data>
+  <data name="DetailHint" xml:space="preserve"><value>Real-ESRGAN для фотографий и реальной съёмки.</value></data>
+  <data name="DefaultOutputFolder" xml:space="preserve"><value>Upscaled рядом с файлом</value></data>
+  <data name="FilesReady" xml:space="preserve"><value>Файлы готовы к обработке</value></data>
+  <data name="Canceling" xml:space="preserve"><value>Отмена обработки…</value></data>
+  <data name="Preparing" xml:space="preserve"><value>Подготовка…</value></data>
+  <data name="ReadyVideoComparison" xml:space="preserve"><value>Сравнение готовых видео</value></data>
+  <data name="ComparisonReady" xml:space="preserve"><value>Сравнение готово</value></data>
+  <data name="ComparisonCanceled" xml:space="preserve"><value>Подготовка сравнения отменена</value></data>
+  <data name="Mute" xml:space="preserve"><value>Выключить звук</value></data>
+  <data name="Replay" xml:space="preserve"><value>Повторить</value></data>
+  <data name="Resume" xml:space="preserve"><value>Продолжить</value></data>
+  <data name="LoadingFrame" xml:space="preserve"><value>Загрузка кадра…</value></data>
+  <data name="Language" xml:space="preserve"><value>Язык интерфейса</value></data>
+  <data name="ElapsedTip" xml:space="preserve"><value>Время обработки и размер результата</value></data>
+  <data name="FileSizePair" xml:space="preserve"><value>·  Размер: {0} → {1}</value></data>
+  <data name="Bytes" xml:space="preserve"><value>Б</value></data>
+  <data name="Kilobytes" xml:space="preserve"><value>КБ</value></data>
+  <data name="Megabytes" xml:space="preserve"><value>МБ</value></data>
+  <data name="Gigabytes" xml:space="preserve"><value>ГБ</value></data>
+  <data name="Terabytes" xml:space="preserve"><value>ТБ</value></data>
+  <data name="Petabytes" xml:space="preserve"><value>ПБ</value></data>
+  <data name="DurationSeconds" xml:space="preserve"><value>{0:0.0} с</value></data>
+  <data name="SkippedFiles" xml:space="preserve"><value>Пропущено неподдерживаемых файлов · {0}</value></data>
+  <data name="RunningFile" xml:space="preserve"><value>Обработка · {0}</value></data>
+  <data name="QueueStopped" xml:space="preserve"><value>Обработка остановлена · готово {0} из {1}</value></data>
+  <data name="QueueErrors" xml:space="preserve"><value>Готово · {0}    Ошибок · {1}</value></data>
+  <data name="QueueCompleted" xml:space="preserve"><value>Обработка завершена · файлов {0}</value></data>
+  <data name="ComparisonFailed" xml:space="preserve"><value>Не удалось подготовить сравнение · {0}</value></data>
+  <data name="Rate" xml:space="preserve"><value>   ·   {0:0.0} кадр/с</value></data>
+  <data name="Remaining" xml:space="preserve"><value>   ·   ещё ≈ {0}</value></data>
+  <data name="FrameMetrics" xml:space="preserve"><value>{0:N0}{1} кадр.{2}{3}</value></data>
+  <data name="FrameNumber" xml:space="preserve"><value>Кадр {0:N0} из {1:N0}</value></data>
+  <data name="PlaybackFailed" xml:space="preserve"><value>Windows не смог воспроизвести видео. Покадровый просмотр доступен. {0}</value></data>
+  <data name="ReadFrameFailed" xml:space="preserve"><value>Не удалось прочитать кадр. {0}</value></data>
+  <data name="MissedFrame" xml:space="preserve"><value>Движок апскейла пропустил кадр {0}.</value></data>
+  <data name="EngineNotFound" xml:space="preserve"><value>Не найден {0}. Проверьте папку tools рядом с приложением.</value></data>
+  <data name="WeightsNotFound" xml:space="preserve"><value>Не найдены веса модели {0}.</value></data>
+  <data name="ToolStartFailed" xml:space="preserve"><value>Не удалось запустить {0}. Проверьте установку.</value></data>
+  <data name="ToolFailed" xml:space="preserve"><value>{0} завершился с ошибкой ({1}).</value></data>
+</root>

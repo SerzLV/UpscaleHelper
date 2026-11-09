@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="StudioEyebrow" xml:space="preserve"><value>UPSCALE STUDIO</value></data>
+  <data name="PhotosAndVideos" xml:space="preserve"><value>Photos and videos</value></data>
+  <data name="MainSubtitle" xml:space="preserve"><value>Upscale photos and videos by 2× or 4× on your PC.</value></data>
+  <data name="CompareFiles" xml:space="preserve"><value>Compare files</value></data>
+  <data name="CompareResult" xml:space="preserve"><value>Compare</value></data>
+  <data name="CompareResultTip" xml:space="preserve"><value>Compare the finished video with the original</value></data>
+  <data name="ComparisonFileMissing" xml:space="preserve"><value>One of the files could not be found. Select it again.</value></data>
+  <data name="CompareFilesTip" xml:space="preserve"><value>Open the original and the finished result (Ctrl+Shift+C)</value></data>
+  <data name="AddFilesTip" xml:space="preserve"><value>Add files (Ctrl+O)</value></data>
+  <data name="AddFiles" xml:space="preserve"><value>Add files</value></data>
+  <data name="Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="RemoveTip" xml:space="preserve"><value>Remove the selected file from the queue (Delete)</value></data>
+  <data name="Queue" xml:space="preserve"><value>Queue</value></data>
+  <data name="DropFiles" xml:space="preserve"><value>Drop files here</value></data>
+  <data name="FileTypesHint" xml:space="preserve"><value>JPG, PNG, WebP, MP4, MKV, and more</value></data>
+  <data name="FileQueue" xml:space="preserve"><value>File queue</value></data>
+  <data name="Reveal" xml:space="preserve"><value>Show file</value></data>
+  <data name="RevealTip" xml:space="preserve"><value>Show the result in File Explorer</value></data>
+  <data name="Details" xml:space="preserve"><value>Details</value></data>
+  <data name="Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="FileProgress" xml:space="preserve"><value>File progress</value></data>
+  <data name="PreviewClip" xml:space="preserve"><value>Preview clip</value></data>
+  <data name="PreviewClipTip" xml:space="preserve"><value>Compare video playback (Ctrl+P)</value></data>
+  <data name="StartTip" xml:space="preserve"><value>Start processing (F5)</value></data>
+  <data name="CancelProcessing" xml:space="preserve"><value>Cancel processing</value></data>
+  <data name="Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="ScaleHeading" xml:space="preserve"><value>01 / SCALE</value></data>
+  <data name="Scale" xml:space="preserve"><value>Scale</value></data>
+  <data name="ScaleFourTip" xml:space="preserve"><value>Choose Detail or Animation for 4×</value></data>
+  <data name="ModelHeading" xml:space="preserve"><value>02 / MODEL</value></data>
+  <data name="UpscaleModel" xml:space="preserve"><value>Upscaling model</value></data>
+  <data name="DetailMode" xml:space="preserve"><value>Detail</value></data>
+  <data name="FastMode" xml:space="preserve"><value>Fast 2×</value></data>
+  <data name="AnimationMode" xml:space="preserve"><value>Animation</value></data>
+  <data name="SaveHeading" xml:space="preserve"><value>03 / OUTPUT</value></data>
+  <data name="ChooseFolder" xml:space="preserve"><value>Choose folder</value></data>
+  <data name="Reset" xml:space="preserve"><value>Reset</value></data>
+  <data name="OutputFormats" xml:space="preserve"><value>Photos → PNG     Video → MP4</value></data>
+  <data name="ComparisonProgress" xml:space="preserve"><value>Comparison preparation progress</value></data>
+  <data name="CompareReadyFiles" xml:space="preserve"><value>Compare finished files</value></data>
+  <data name="ChoosePair" xml:space="preserve"><value>Choose two photos or two videos.</value></data>
+  <data name="OriginalTag" xml:space="preserve"><value>ORIGINAL</value></data>
+  <data name="Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="ChooseOriginal" xml:space="preserve"><value>Choose original</value></data>
+  <data name="NoFileSelected" xml:space="preserve"><value>No file selected</value></data>
+  <data name="EnhancedTag" xml:space="preserve"><value>ENHANCED FILE</value></data>
+  <data name="ChooseEnhanced" xml:space="preserve"><value>Choose enhanced file</value></data>
+  <data name="Duration" xml:space="preserve"><value>Duration</value></data>
+  <data name="ComparisonDuration" xml:space="preserve"><value>Comparison duration</value></data>
+  <data name="WholeVideo" xml:space="preserve"><value>Entire video</value></data>
+  <data name="FiveSeconds" xml:space="preserve"><value>5 seconds</value></data>
+  <data name="TenSeconds" xml:space="preserve"><value>10 seconds</value></data>
+  <data name="ClipStart" xml:space="preserve"><value>Clip start</value></data>
+  <data name="ShorterVideo" xml:space="preserve"><value>If the videos are different lengths, comparison ends with the shorter one.</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="OpenComparison" xml:space="preserve"><value>Open comparison</value></data>
+  <data name="ComparisonMode" xml:space="preserve"><value>Comparison mode</value></data>
+  <data name="SideBySide" xml:space="preserve"><value>Side by side</value></data>
+  <data name="Wipe" xml:space="preserve"><value>Wipe</value></data>
+  <data name="WipeUnavailable" xml:space="preserve"><value>Load the original and the result</value></data>
+  <data name="SharedZoom" xml:space="preserve"><value>Linked zoom</value></data>
+  <data name="FitResetTip" xml:space="preserve"><value>Fit both images and reset their position</value></data>
+  <data name="NativeResultTip" xml:space="preserve"><value>One result pixel per screen pixel</value></data>
+  <data name="Comparison" xml:space="preserve"><value>Comparison</value></data>
+  <data name="LoadMedia" xml:space="preserve"><value>Load a photo or video</value></data>
+  <data name="Original" xml:space="preserve"><value>Original</value></data>
+  <data name="Result" xml:space="preserve"><value>Result</value></data>
+  <data name="ResultTag" xml:space="preserve"><value>RESULT</value></data>
+  <data name="Divider" xml:space="preserve"><value>Comparison divider</value></data>
+  <data name="DividerTip" xml:space="preserve"><value>Drag the divider or use ← and →</value></data>
+  <data name="PhotoComparison" xml:space="preserve"><value>Photo comparison</value></data>
+  <data name="ReadyPhotoComparison" xml:space="preserve"><value>Compare finished photos</value></data>
+  <data name="Close" xml:space="preserve"><value>Close</value></data>
+  <data name="ProcessingError" xml:space="preserve"><value>Processing error</value></data>
+  <data name="ErrorDetails" xml:space="preserve"><value>Error details</value></data>
+  <data name="VideoComparison" xml:space="preserve"><value>Video comparison</value></data>
+  <data name="PlaybackComparison" xml:space="preserve"><value>Playback comparison</value></data>
+  <data name="Loading" xml:space="preserve"><value>Loading…</value></data>
+  <data name="FramePair" xml:space="preserve"><value>Original and result at the selected frame</value></data>
+  <data name="PreviewTimeTip" xml:space="preserve"><value>Time from the start of the comparison</value></data>
+  <data name="FrameTimeline" xml:space="preserve"><value>Frame timeline</value></data>
+  <data name="Pause" xml:space="preserve"><value>Pause</value></data>
+  <data name="PreviousButton" xml:space="preserve"><value>← Frame</value></data>
+  <data name="PreviousFrame" xml:space="preserve"><value>Previous frame</value></data>
+  <data name="PreviousFrameTip" xml:space="preserve"><value>Previous frame (←)</value></data>
+  <data name="NextButton" xml:space="preserve"><value>Frame →</value></data>
+  <data name="NextFrame" xml:space="preserve"><value>Next frame</value></data>
+  <data name="NextFrameTip" xml:space="preserve"><value>Next frame (→)</value></data>
+  <data name="Unmute" xml:space="preserve"><value>Unmute</value></data>
+  <data name="Start" xml:space="preserve"><value>Start</value></data>
+  <data name="ClipDuration" xml:space="preserve"><value>Clip duration</value></data>
+  <data name="SegmentHelp" xml:space="preserve"><value>Enter seconds or a time such as 1:23. The main window's upscale settings are used.</value></data>
+  <data name="Prepare" xml:space="preserve"><value>Prepare</value></data>
+  <data name="PreparingComparison" xml:space="preserve"><value>Preparing video for comparison</value></data>
+  <data name="FrameCountError" xml:space="preserve"><value>Could not determine the number of frames in the comparison.</value></data>
+  <data name="InvalidPngFrame" xml:space="preserve"><value>FFmpeg returned a corrupt PNG frame.</value></data>
+  <data name="MissingOutput" xml:space="preserve"><value>Processing did not produce an output file.</value></data>
+  <data name="PreparingImage" xml:space="preserve"><value>Preparing image</value></data>
+  <data name="GpuUpscale" xml:space="preserve"><value>Upscaling on the GPU</value></data>
+  <data name="MissingImageOutput" xml:space="preserve"><value>The upscaler did not produce an image.</value></data>
+  <data name="SavingPng" xml:space="preserve"><value>Saving PNG</value></data>
+  <data name="ReadingVideo" xml:space="preserve"><value>Reading video information</value></data>
+  <data name="InvalidSegment" xml:space="preserve"><value>Enter a start time and a positive clip duration.</value></data>
+  <data name="SegmentPastEnd" xml:space="preserve"><value>The clip starts after the end of the video.</value></data>
+  <data name="NoDecodedFrames" xml:space="preserve"><value>Could not read any video frames.</value></data>
+  <data name="PhotoTag" xml:space="preserve"><value>PHOTO</value></data>
+  <data name="VideoTag" xml:space="preserve"><value>VIDEO</value></data>
+  <data name="Running" xml:space="preserve"><value>Processing</value></data>
+  <data name="Done" xml:space="preserve"><value>Done</value></data>
+  <data name="Error" xml:space="preserve"><value>Error</value></data>
+  <data name="Canceled" xml:space="preserve"><value>Canceled</value></data>
+  <data name="Queued" xml:space="preserve"><value>Queued</value></data>
+  <data name="SelectQueueFile" xml:space="preserve"><value>Select a file in the queue</value></data>
+  <data name="ResultPlaceholder" xml:space="preserve"><value>Available after processing</value></data>
+  <data name="LoadingPreview" xml:space="preserve"><value>Loading preview…</value></data>
+  <data name="NoImageInFile" xml:space="preserve"><value>The file does not contain an image.</value></data>
+  <data name="CannotOpenFile" xml:space="preserve"><value>Could not open the file</value></data>
+  <data name="InvalidTimecode" xml:space="preserve"><value>Enter seconds, M:SS, or H:MM:SS.</value></data>
+  <data name="OutputFolderDialog" xml:space="preserve"><value>Choose where to save results</value></data>
+  <data name="MissingResult" xml:space="preserve"><value>The result is no longer in this folder.</value></data>
+  <data name="AllFiles" xml:space="preserve"><value>All files</value></data>
+  <data name="NoVideoStream" xml:space="preserve"><value>The file does not contain a video stream.</value></data>
+  <data name="HdrUnsupported" xml:space="preserve"><value>This version supports SDR. HDR requires a separate color workflow.</value></data>
+  <data name="FrameUnavailable" xml:space="preserve"><value>The selected frame is missing from the video.</value></data>
+  <data name="PairSegmentPastEnd" xml:space="preserve"><value>The clip starts after the end of one of the videos.</value></data>
+  <data name="UpscalingFrames" xml:space="preserve"><value>Upscaling frames on the GPU</value></data>
+  <data name="SavingMp4" xml:space="preserve"><value>Saving MP4</value></data>
+  <data name="RemoveAudio" xml:space="preserve"><value>Remove audio</value></data>
+  <data name="RemoveAudioTip" xml:space="preserve"><value>Export queued videos without audio tracks</value></data>
+  <data name="WipeTip" xml:space="preserve"><value>Overlay the original and the result</value></data>
+  <data name="OpenMedia" xml:space="preserve"><value>Open a photo or video</value></data>
+  <data name="ReducedPreviewTip" xml:space="preserve"><value>This file uses a reduced-resolution preview</value></data>
+  <data name="NativeOriginalTip" xml:space="preserve"><value>One original pixel per screen pixel</value></data>
+  <data name="Fit" xml:space="preserve"><value>Fit</value></data>
+  <data name="PickOriginalTitle" xml:space="preserve"><value>Select the original file</value></data>
+  <data name="PickEnhancedTitle" xml:space="preserve"><value>Select the enhanced file</value></data>
+  <data name="UnsupportedFile" xml:space="preserve"><value>Choose a supported file format.</value></data>
+  <data name="MismatchedPair" xml:space="preserve"><value>Choose two photos or two videos to compare.</value></data>
+  <data name="DistinctFiles" xml:space="preserve"><value>Choose two different files.</value></data>
+  <data name="Ready" xml:space="preserve"><value>Ready</value></data>
+  <data name="RepeatSelected" xml:space="preserve"><value>Run selected again</value></data>
+  <data name="StartProcessing" xml:space="preserve"><value>Start processing</value></data>
+  <data name="FastHint" xml:space="preserve"><value>Waifu2x Photo for live-action footage. Scale: 2×.</value></data>
+  <data name="AnimationHint" xml:space="preserve"><value>For anime, illustrations, and drawn frames.</value></data>
+  <data name="DetailHint" xml:space="preserve"><value>Real-ESRGAN for photos and live-action footage.</value></data>
+  <data name="DefaultOutputFolder" xml:space="preserve"><value>Upscaled next to the source</value></data>
+  <data name="FilesReady" xml:space="preserve"><value>Files are ready to process</value></data>
+  <data name="Canceling" xml:space="preserve"><value>Canceling…</value></data>
+  <data name="Preparing" xml:space="preserve"><value>Preparing…</value></data>
+  <data name="ReadyVideoComparison" xml:space="preserve"><value>Compare finished videos</value></data>
+  <data name="ComparisonReady" xml:space="preserve"><value>Comparison ready</value></data>
+  <data name="ComparisonCanceled" xml:space="preserve"><value>Comparison preparation canceled</value></data>
+  <data name="Mute" xml:space="preserve"><value>Mute</value></data>
+  <data name="Replay" xml:space="preserve"><value>Replay</value></data>
+  <data name="Resume" xml:space="preserve"><value>Resume</value></data>
+  <data name="LoadingFrame" xml:space="preserve"><value>Loading frame…</value></data>
+  <data name="Language" xml:space="preserve"><value>Interface language</value></data>
+  <data name="ElapsedTip" xml:space="preserve"><value>Processing time and output file size</value></data>
+  <data name="FileSizePair" xml:space="preserve"><value>·  Size: {0} → {1}</value></data>
+  <data name="Bytes" xml:space="preserve"><value>B</value></data>
+  <data name="Kilobytes" xml:space="preserve"><value>KB</value></data>
+  <data name="Megabytes" xml:space="preserve"><value>MB</value></data>
+  <data name="Gigabytes" xml:space="preserve"><value>GB</value></data>
+  <data name="Terabytes" xml:space="preserve"><value>TB</value></data>
+  <data name="Petabytes" xml:space="preserve"><value>PB</value></data>
+  <data name="DurationSeconds" xml:space="preserve"><value>{0:0.0} s</value></data>
+  <data name="SkippedFiles" xml:space="preserve"><value>Unsupported files skipped · {0}</value></data>
+  <data name="RunningFile" xml:space="preserve"><value>Processing · {0}</value></data>
+  <data name="QueueStopped" xml:space="preserve"><value>Processing stopped · {0} of {1} completed</value></data>
+  <data name="QueueErrors" xml:space="preserve"><value>Completed · {0}    Errors · {1}</value></data>
+  <data name="QueueCompleted" xml:space="preserve"><value>Processing complete · {0} files</value></data>
+  <data name="ComparisonFailed" xml:space="preserve"><value>Could not prepare the comparison · {0}</value></data>
+  <data name="Rate" xml:space="preserve"><value>   ·   {0:0.0} fps</value></data>
+  <data name="Remaining" xml:space="preserve"><value>   ·   ≈ {0} left</value></data>
+  <data name="FrameMetrics" xml:space="preserve"><value>{0:N0}{1} frames{2}{3}</value></data>
+  <data name="FrameNumber" xml:space="preserve"><value>Frame {0:N0} of {1:N0}</value></data>
+  <data name="PlaybackFailed" xml:space="preserve"><value>Windows could not play this video. Frame-by-frame viewing is available. {0}</value></data>
+  <data name="ReadFrameFailed" xml:space="preserve"><value>Could not read the frame. {0}</value></data>
+  <data name="MissedFrame" xml:space="preserve"><value>The upscaler skipped frame {0}.</value></data>
+  <data name="EngineNotFound" xml:space="preserve"><value>{0} was not found. Check the tools folder next to the application.</value></data>
+  <data name="WeightsNotFound" xml:space="preserve"><value>Could not find weights for model {0}.</value></data>
+  <data name="ToolStartFailed" xml:space="preserve"><value>Could not start {0}. Check its installation.</value></data>
+  <data name="ToolFailed" xml:space="preserve"><value>{0} exited with an error ({1}).</value></data>
+</root>

@@ -1,0 +1,155 @@
+<UserControl x:Class="UpscaleHelper.Presentation.ComparisonView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Geometry x:Key="CompareMark">M2,8 L2,2 8,2 M14,2 L20,2 20,8 M20,14 L20,20 14,20 M8,20 L2,20 2,14 M7,15 L15,7 M10,7 L15,7 15,12</Geometry>
+        <DrawingBrush x:Key="PreviewGrid" TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute"
+                      Viewbox="0,0,24,24" ViewboxUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Brush="#131622" Geometry="M0,0 H24 V24 H0 Z">
+                    <GeometryDrawing.Pen><Pen Brush="#202437" Thickness="0.8"/></GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+        <Style x:Key="PreviewPane" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PreviewGrid}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+        </Style>
+        <Style x:Key="EmptyPreview" TargetType="StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="PreviewMark" TargetType="Path">
+            <Setter Property="Data" Value="{StaticResource CompareMark}"/>
+            <Setter Property="Stroke" Value="#8175B0"/>
+            <Setter Property="StrokeThickness" Value="1.45"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CompactChoice" TargetType="ListBoxItem" BasedOn="{StaticResource ChoiceRow}">
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Margin" Value="0,0,3,0"/>
+        </Style>
+        <Style x:Key="PreviewButton" TargetType="Button" BasedOn="{StaticResource StudioButton}">
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                <ListBox x:Name="LayoutChoice" Style="{StaticResource ChoiceList}" Width="176" SelectedIndex="0"
+                         SelectionChanged="OnLayoutChanged" AutomationProperties.Name="{DynamicResource ComparisonMode}">
+                    <ListBoxItem Style="{StaticResource CompactChoice}" Content="{DynamicResource SideBySide}"/>
+                    <ListBoxItem x:Name="WipeOption" Style="{StaticResource CompactChoice}" Content="{DynamicResource Wipe}"
+                                 Margin="0" IsEnabled="False" ToolTipService.ShowOnDisabled="True"
+                                 ToolTip="{DynamicResource WipeUnavailable}"/>
+                </ListBox>
+                <Slider x:Name="ZoomSlider" Minimum="1" Maximum="8" Value="1" Width="57" Margin="8,0,0,0"
+                        SmallChange="0.25" LargeChange="1" IsMoveToPointEnabled="True" IsEnabled="False"
+                        ValueChanged="OnZoomChanged" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource SharedZoom}"/>
+                <Button x:Name="ZoomReset" Content="100%" Click="OnZoomReset" Style="{StaticResource PreviewButton}" Width="66"
+                        IsEnabled="False" ToolTip="{DynamicResource FitResetTip}"/>
+                <Button x:Name="PixelZoom" Content="1:1" Click="OnPixelZoom" Style="{StaticResource PreviewButton}" Width="37"
+                        IsEnabled="False" ToolTipService.ShowOnDisabled="True" ToolTip="{DynamicResource NativeResultTip}"/>
+            </StackPanel>
+            <TextBlock Text="{DynamicResource Comparison}" FontWeight="SemiBold" FontSize="17" VerticalAlignment="Center"/>
+        </DockPanel>
+        <WrapPanel Grid.Row="1" Margin="0,4,0,11">
+            <TextBlock x:Name="DimensionsLine" Text="{DynamicResource LoadMedia}" Style="{StaticResource MutedText}"/>
+            <TextBlock Text="{Binding FileSizesLabel}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+                        <Setter Property="Margin" Value="12,0,0,0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FileSizesLabel}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </WrapPanel>
+        <Grid x:Name="Viewports" Grid.Row="2" ClipToBounds="True" SizeChanged="OnViewportSizeChanged">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <Border x:Name="OriginalPane" Style="{StaticResource PreviewPane}" SizeChanged="OnViewportSizeChanged"
+                    PreviewMouseWheel="OnPreviewWheel" MouseLeftButtonDown="OnPanStart" MouseMove="OnPanMove"
+                    MouseLeftButtonUp="OnPanEnd" LostMouseCapture="OnPanLost">
+                <Grid>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel" BasedOn="{StaticResource EmptyPreview}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers><DataTrigger Binding="{Binding Before}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger></Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Path Style="{StaticResource PreviewMark}"/>
+                        <TextBlock Text="{Binding BeforeHint}" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
+                    </StackPanel>
+                    <Image x:Name="OriginalImage" Source="{Binding Before.Bitmap}" Stretch="Uniform" RenderTransformOrigin="0.5,0.5"
+                           SnapsToDevicePixels="True" AutomationProperties.Name="{DynamicResource Original}"/>
+                    <Border VerticalAlignment="Top" HorizontalAlignment="Left" Background="#E9212435" CornerRadius="5" Margin="9" Padding="7,4">
+                        <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}"/>
+                    </Border>
+                </Grid>
+            </Border>
+            <Border x:Name="EnhancedPane" Grid.Column="2" Style="{StaticResource PreviewPane}"
+                    PreviewMouseWheel="OnPreviewWheel" MouseLeftButtonDown="OnPanStart" MouseMove="OnPanMove"
+                    MouseLeftButtonUp="OnPanEnd" LostMouseCapture="OnPanLost">
+                <Grid>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel" BasedOn="{StaticResource EmptyPreview}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers><DataTrigger Binding="{Binding After}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger></Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Path Style="{StaticResource PreviewMark}"/>
+                        <TextBlock Text="{Binding AfterHint}" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
+                    </StackPanel>
+                    <Image x:Name="EnhancedImage" Source="{Binding After.Bitmap}" Stretch="Uniform" RenderTransformOrigin="0.5,0.5"
+                           SnapsToDevicePixels="True" AutomationProperties.Name="{DynamicResource Result}"/>
+                    <Border x:Name="ResultTag" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#ED342758"
+                            CornerRadius="5" Margin="9" Padding="7,4">
+                        <TextBlock Text="{DynamicResource ResultTag}" Style="{StaticResource Eyebrow}"/>
+                    </Border>
+                </Grid>
+            </Border>
+            <Canvas x:Name="DividerLayer" Grid.ColumnSpan="3" Visibility="Collapsed">
+                <Thumb x:Name="Divider" Width="28" Focusable="True" Cursor="SizeWE"
+                       DragDelta="OnDividerDrag" KeyDown="OnDividerKey" AutomationProperties.Name="{DynamicResource Divider}"
+                       ToolTip="{DynamicResource DividerTip}">
+                    <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid Background="Transparent">
+                                <Border Width="2" Background="{StaticResource AccentBrush}" HorizontalAlignment="Center"/>
+                                <Border x:Name="Handle" Width="28" Height="32" CornerRadius="10" Background="#342758"
+                                        BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="‹ ›" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="Handle" Property="BorderBrush" Value="White"/>
+                                    <Setter TargetName="Handle" Property="BorderThickness" Value="2"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Canvas>
+        </Grid>
+    </Grid>
+</UserControl>

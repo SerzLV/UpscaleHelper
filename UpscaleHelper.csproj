@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets/UpscaleHelper.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets/UpscaleHelper.ico"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(CopyLocalTools)' != 'false'">
+    <None Update="tools/realesrgan/realesrgan-ncnn-vulkan.exe;tools/realesrgan/vcomp140.dll;tools/realesrgan/models/*.bin;tools/realesrgan/models/*.param;tools/realesrgan/LICENSE;tools/waifu2x/waifu2x-ncnn-vulkan.exe;tools/waifu2x/models-upconv_7_photo/*;tools/waifu2x/LICENSE;tools/ffmpeg/*.exe"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+  </ItemGroup>
+</Project>

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using UpscaleHelper.Infrastructure;
 using UpscaleHelper.Presentation;
 
 namespace UpscaleHelper;
@@ -7,6 +8,7 @@ namespace UpscaleHelper;
 public partial class MainWindow : Window
 {
     private readonly StudioViewModel studio;
+    private readonly WindowPlacement placement = new(AppStorage.Root);
 
     private bool closingAfterCancellation;
 
@@ -14,6 +16,7 @@ public partial class MainWindow : Window
     {
         this.studio = studio;
         InitializeComponent();
+        placement.Restore(this);
         DataContext = studio;
         studio.PropertyChanged += OnStudioChanged;
     }
@@ -48,6 +51,7 @@ public partial class MainWindow : Window
             await Dispatcher.InvokeAsync(Close);
             return;
         }
+        placement.Save(this);
         studio.StopPreview();
     }
 }

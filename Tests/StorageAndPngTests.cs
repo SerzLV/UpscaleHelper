@@ -53,9 +53,13 @@ public class StorageAndPngTests
     public void SavesAndRestoresPreferences()
     {
         using var work = new TestDirectory();
+        File.WriteAllText(Path.Combine(work.Path, "settings.json"), """{"Language":"ru","ModelIndex":2}""");
         var store = new SettingsStore(work.Path);
-        store.Update(_ => new("en", 2, 1, work.Path, true));
-        Assert.Equal(new("en", 2, 1, work.Path, true), new SettingsStore(work.Path).Current);
+        Assert.Equal("ru", store.Current.Language);
+        Assert.Equal(2, store.Current.ModelIndex);
+        Assert.Equal(VideoQuality.Balanced, store.Current.VideoQuality);
+        store.Update(_ => new("en", 2, 1, work.Path, true, VideoQuality.Compact));
+        Assert.Equal(new("en", 2, 1, work.Path, true, VideoQuality.Compact), new SettingsStore(work.Path).Current);
         Assert.Single(Directory.EnumerateFiles(work.Path));
     }
 

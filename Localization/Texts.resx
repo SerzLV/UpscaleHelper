@@ -189,4 +189,11 @@
   <data name="WeightsNotFound" xml:space="preserve"><value>Не найдены веса модели {0}.</value></data>
   <data name="ToolStartFailed" xml:space="preserve"><value>Не удалось запустить {0}. Проверьте установку.</value></data>
   <data name="ToolFailed" xml:space="preserve"><value>{0} завершился с ошибкой ({1}).</value></data>
+  <data name="VideoQualityHeading" xml:space="preserve"><value>Качество экспорта MP4</value></data>
+  <data name="VideoQualityCompact" xml:space="preserve"><value>Компактный</value></data>
+  <data name="VideoQualityBalanced" xml:space="preserve"><value>Сбалансированный</value></data>
+  <data name="VideoQualityHigh" xml:space="preserve"><value>Высокое качество</value></data>
+  <data name="ExportEstimate" xml:space="preserve"><value>Примерный размер полного видео · ≈ {0}</value></data>
+  <data name="ExportEstimateTip" xml:space="preserve"><value>Оценка по этому фрагменту и текущим настройкам экспорта. Итоговый размер зависит от содержания всего видео.</value></data>
+  <data name="MissingSource" xml:space="preserve"><value>Исходный файл недоступен. Проверь его папку или диск.</value></data>
 </root>

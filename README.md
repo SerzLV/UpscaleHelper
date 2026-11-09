@@ -16,9 +16,9 @@ Upscale photos and videos on your GPU. Test a short clip before processing the f
 | --- | --- |
 | **2× and 4× upscaling** | Choose Detail for photos and live-action footage, Fast 2× for shorter processing times, or Animation for drawn content. |
 | **Photo comparison** | Use side by side, a draggable wipe, linked zoom, or a 1:1 view. See both resolutions and file sizes. |
-| **Video comparison** | Try a 5- or 10-second clip, reopen a completed job, or load an existing pair. Pause or step through the source frames with linked zoom, a wipe, and a 1:1 view. |
-| **Batch queue** | See frame progress and estimated time left. Completed rows show processing time and output size. |
-| **Export options** | Save photos as PNG and SDR videos as H.264 MP4. Keep audio or export a silent video. |
+| **Video comparison** | Try a 5- or 10-second clip with an estimate of the full export size, reopen a completed job, or load an existing pair. Pause or step through the source frames with linked zoom, a wipe, and a 1:1 view. |
+| **Batch queue** | See frame progress and estimated time left. The queue and its completed results are restored when you reopen the app. |
+| **Export options** | Save photos as PNG and SDR videos as H.264 MP4. Choose Compact, Balanced, or High quality for video and keep or remove audio. |
 
 ## Quick start
 
@@ -30,7 +30,7 @@ UpscaleHelper requires **Windows x64**, a Vulkan-capable GPU with current driver
 
 Use **Ctrl+P** to preview a selected video and **Ctrl+Shift+C** to compare files you already have. In the video comparison window, **←** and **→** step through frames. The **RU / EN** switch is in the top bar.
 
-On first launch, the app uses Russian if Windows uses Russian and English otherwise. It remembers your language, model, scale, output folder, and audio preference. If processing fails, look for `%LocalAppData%\UpscaleHelper\logs\app.log`.
+On first launch, the app uses Russian if Windows uses Russian and English otherwise. It remembers your language, model, scale, output folder, and video export settings. If processing fails, look for `%LocalAppData%\UpscaleHelper\logs\app.log`.
 
 ## Build from source
 

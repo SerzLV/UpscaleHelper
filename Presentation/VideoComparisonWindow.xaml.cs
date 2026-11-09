@@ -31,6 +31,11 @@ public partial class VideoComparisonWindow : Window
         FrameComparison.DataContext = frameComparison;
         FileLabel.Text = name;
         FileLabel.ToolTip = name;
+        if (clip.EstimatedExportBytes is { } bytes)
+        {
+            ExportEstimate.Text = T("ExportEstimate", FileSize.Format(bytes));
+            ExportEstimate.Visibility = Visibility.Visible;
+        }
         timer.Tick += (_, _) =>
         {
             if (playing) SetFrameIndex(PlaybackFrame());

@@ -4,6 +4,8 @@ namespace UpscaleHelper.Presentation;
 
 internal enum JobState { Waiting, Running, Completed, Failed, Canceled }
 
+internal sealed record QueueEntry(string Path, JobState State, string? Output, TimeSpan? Elapsed, string? Error);
+
 internal sealed class QueueItem(string path, MediaKind kind) : ObservableModel
 {
     private JobState state;

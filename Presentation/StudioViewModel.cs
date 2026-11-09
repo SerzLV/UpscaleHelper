@@ -14,6 +14,7 @@ internal sealed class StudioViewModel : ObservableModel
     private readonly IStudioDialogs dialogs;
     private readonly IInterfaceLanguage language;
     private readonly ISettingsStore settings;
+    private readonly LocalJsonFile<QueueEntry[]> queue;
     private CancellationTokenSource? batch;
     private QueueItem? selected;
     private QueueItem? activeItem;
@@ -24,12 +25,14 @@ internal sealed class StudioViewModel : ObservableModel
     private int scaleIndex;
     private int modelIndex;
     private bool removeAudio;
+    private VideoQuality videoQuality;
     private bool canceling;
     private bool isComparisonRunning;
     private VideoSegment? lastSegment;
 
     public StudioViewModel(IUpscaleProcessor processor, IPreviewProvider previews,
-        IVideoPreviewBuilder videoPreviews, IStudioDialogs dialogs, IInterfaceLanguage language, ISettingsStore settings)
+        IVideoPreviewBuilder videoPreviews, IStudioDialogs dialogs, IInterfaceLanguage language, ISettingsStore settings,
+        LocalJsonFile<QueueEntry[]> queue)
     {
         this.processor = processor;
         this.previews = previews;
@@ -37,11 +40,13 @@ internal sealed class StudioViewModel : ObservableModel
         this.dialogs = dialogs;
         this.language = language;
         this.settings = settings;
+        this.queue = queue;
         var saved = settings.Current;
         modelIndex = Math.Clamp(saved.ModelIndex, 0, 2);
         scaleIndex = saved.ScaleIndex == 1 && modelIndex != 1 ? 1 : 0;
         folder = Path.IsPathFullyQualified(saved.DestinationFolder ?? "") ? saved.DestinationFolder : null;
         removeAudio = saved.RemoveAudio;
+        videoQuality = Enum.IsDefined(saved.VideoQuality) ? saved.VideoQuality : VideoQuality.Balanced;
         Comparison = new ComparisonViewModel(previews);
         AddCommand = new(() => AddFiles(dialogs.PickFiles()), () => CanEdit);
         CompareFilesCommand = new(async parameter => await CompareFilesAsync(parameter as QueueItem), _ => CanEdit);
@@ -66,6 +71,7 @@ internal sealed class StudioViewModel : ObservableModel
             () => CanEdit && (Selected is not null || Items.Any(item => item.State != JobState.Completed)));
         PreviewCommand = new(async () => await PreviewVideoAsync(), () => CanEdit && CanPreviewVideo);
         CancelCommand = new(Cancel, () => IsBusy && !canceling);
+        RestoreQueue();
     }
 
     public ObservableCollection<QueueItem> Items { get; } = [];
@@ -89,6 +95,14 @@ internal sealed class StudioViewModel : ObservableModel
     {
         get => removeAudio;
         set { if (Set(ref removeAudio, value)) SaveSettings(); }
+    }
+    public int VideoQualityIndex
+    {
+        get => (int)videoQuality;
+        set
+        {
+            if (Enum.IsDefined((VideoQuality)value) && Set(ref videoQuality, (VideoQuality)value)) SaveSettings();
+        }
     }
     public string CountLabel => Items.Count.ToString("D2");
     public string StartLabel => HasItems && !IsBusy && Items.All(item => item.State == JobState.Completed)
@@ -159,7 +173,8 @@ internal sealed class StudioViewModel : ObservableModel
         ModelIndex = modelIndex,
         ScaleIndex = scaleIndex,
         DestinationFolder = folder,
-        RemoveAudio = removeAudio
+        RemoveAudio = removeAudio,
+        VideoQuality = videoQuality
     });
     public string Status => status();
     public string Metrics { get => metrics; private set => Set(ref metrics, value); }
@@ -214,6 +229,7 @@ internal sealed class StudioViewModel : ObservableModel
         else if (firstAdded is not null) SetStatus("FilesReady");
         if (firstAdded is not null)
         {
+            SaveQueue();
             Percent = 0;
             Metrics = "";
         }
@@ -236,6 +252,7 @@ internal sealed class StudioViewModel : ObservableModel
         if (Selected is not { } item) return;
         int index = Items.IndexOf(item);
         Items.Remove(item);
+        SaveQueue();
         Selected = Items.Count > 0 ? Items[Math.Min(index, Items.Count - 1)] : null;
         if (!HasItems)
         {
@@ -298,6 +315,7 @@ internal sealed class StudioViewModel : ObservableModel
             });
             try
             {
+                if (!File.Exists(item.Path)) throw new FileNotFoundException(T("MissingSource"));
                 long started = Stopwatch.GetTimestamp();
                 string output = await Task.Run(() => processor.ProcessAsync(request, progress, token), token);
                 item.Elapsed = Stopwatch.GetElapsedTime(started);
@@ -321,6 +339,7 @@ internal sealed class StudioViewModel : ObservableModel
                 item.State = JobState.Failed;
                 failed++;
             }
+            finally { SaveQueue(); }
         }
         if (token.IsCancellationRequested) SetStatus("QueueStopped", completed, pending.Length);
         else if (failed > 0) SetStatus("QueueErrors", completed, failed);
@@ -400,7 +419,39 @@ internal sealed class StudioViewModel : ObservableModel
 
     private UpscaleRequest RequestFor(QueueItem item) => new(item.Path, item.Kind, ScaleIndex == 1 ? 4 : 2,
         ModelIndex == 2 ? ContentProfile.Animation : ContentProfile.Natural, Folder, ModelIndex == 1,
-        RemoveAudio: item.Kind == MediaKind.Video && RemoveAudio);
+        RemoveAudio: item.Kind == MediaKind.Video && RemoveAudio, VideoQuality: videoQuality);
+
+    private void RestoreQueue()
+    {
+        var paths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in queue.Read() ?? [])
+        {
+            if (entry?.Path is not { } path || !Path.IsPathFullyQualified(path) ||
+                SupportedMedia.GetKind(path) is not { } kind || !paths.Add(path)) continue;
+            string? output = entry.Output;
+            long? size = output is not null && Path.IsPathFullyQualified(output) ? FileSize.TryRead(output) : null;
+            bool hasOutput = size is > 0;
+            Items.Add(new QueueItem(path, kind)
+            {
+                Output = hasOutput ? output : null,
+                OutputSizeBytes = hasOutput ? size : null,
+                Elapsed = hasOutput ? entry.Elapsed : null,
+                Error = entry.State == JobState.Failed ? entry.Error : null,
+                State = entry.State switch
+                {
+                    JobState.Completed when hasOutput => JobState.Completed,
+                    JobState.Failed => JobState.Failed,
+                    JobState.Canceled => JobState.Canceled,
+                    _ => JobState.Waiting
+                }
+            });
+        }
+        Selected = Items.FirstOrDefault();
+        RefreshQueue();
+    }
+
+    private void SaveQueue() => queue.Write(Items.Select(item =>
+        new QueueEntry(item.Path, item.State, item.Output, item.Elapsed, item.Error)).ToArray());
 
     private static string FormatFrames(FrameProgress frames)
     {

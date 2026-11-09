@@ -7,6 +7,47 @@ namespace UpscaleHelper.Tests;
 public class MediaComparisonTests
 {
     [FfmpegFact]
+    public async Task ExportQualityChangesTheEncodedFileSize()
+    {
+        using var work = new TestDirectory();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+        var token = timeout.Token;
+        var paths = new ToolPaths(work.Path);
+        var runner = new ToolRunner();
+        var media = new MediaTools(paths, runner);
+        string input = Path.Combine(work.Path, "input.pngs");
+        await using (var file = File.Create(input))
+        {
+            // The height stays below the NVENC threshold so this also runs on CPUs without NVIDIA hardware.
+            await runner.RunAsync(paths.Ffmpeg, ["-v", "error", "-f", "lavfi", "-i", "testsrc2=s=192x112:r=12:d=2",
+                "-c:v", "png", "-threads", "1", "-f", "image2pipe", "pipe:1"], token,
+                readOutput: (stream, ct) => stream.CopyToAsync(file, ct));
+        }
+        var info = new VideoInfo("12", 12, 2, 192, 112, 24);
+        long previousSize = 0;
+        foreach (var quality in new[] { VideoQuality.Compact, VideoQuality.Balanced, VideoQuality.High })
+        {
+            string output = Path.Combine(work.Path, $"{quality}.mp4");
+            await media.EncodeAsync(input, output, info, 2, false, null, true, quality, token, async (pipe, ct) =>
+            {
+                await using var frames = File.OpenRead(input);
+                await frames.CopyToAsync(pipe, ct);
+            });
+            long size = new FileInfo(output).Length;
+            Assert.True(size > previousSize, $"The {quality} file should be larger than the previous preset.");
+            previousSize = size;
+        }
+    }
+
+    [Theory]
+    [InlineData(1000, 5, 60, 12000L)]
+    [InlineData(1000, 5, 5, 1000L)]
+    [InlineData(1000, 5, 0, null)]
+    [InlineData(1000, 0, 60, null)]
+    public void ExportSizeUsesActualSampleDuration(long bytes, double sample, double full, long? expected) =>
+        Assert.Equal(expected, VideoPreviewBuilder.EstimateExportSize(bytes, sample, full));
+
+    [FfmpegFact]
     public async Task PausedFramesUseBothNativeSourcesAndTheClipTimeline()
     {
         using var work = new TestDirectory();

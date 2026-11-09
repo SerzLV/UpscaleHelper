@@ -76,7 +76,8 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
         var timing = new FrameTiming(estimate is > 0 and <= int.MaxValue ? (int)estimate : null, progress);
         int processed = 0;
 
-        await media.EncodeAsync(request.Source, output, info, request.Scale, resize, request.Segment, request.RemoveAudio, token,
+        await media.EncodeAsync(request.Source, output, info, request.Scale, resize, request.Segment,
+            request.RemoveAudio, request.VideoQuality, token,
             (encoder, encodeToken) => media.DecodeAsync(request.Source, info, request.Segment, encodeToken, async (decoder, decodeToken) =>
             {
                 var reader = new PngFrameReader(decoder);

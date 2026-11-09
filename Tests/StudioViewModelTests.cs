@@ -15,11 +15,16 @@ public class StudioViewModelTests
         File.WriteAllText(source, "placeholder");
         var settings = new MemorySettings(new("en", 2, 1, work.Path, true));
         var processor = new FakeProcessor();
+        var queue = new LocalJsonFile<QueueEntry[]>(work.Path, "queue.json");
+        var dialogs = new TestDialogs();
         var studio = new StudioViewModel(processor, new EmptyPreview(), new UnusedVideoPreview(),
-            new UnusedDialogs(), new TestLanguage(), settings);
+            dialogs, new TestLanguage(), settings, queue);
         Assert.Equal(1, studio.ScaleIndex);
         Assert.Equal(2, studio.ModelIndex);
         Assert.True(studio.RemoveAudio);
+        Assert.Equal((int)VideoQuality.Balanced, studio.VideoQualityIndex);
+        studio.VideoQualityIndex = (int)VideoQuality.High;
+        Assert.Equal(VideoQuality.High, settings.Current.VideoQuality);
         studio.ModelIndex = 1;
         Assert.Equal(0, settings.Current.ScaleIndex);
         Assert.Equal(1, settings.Current.ModelIndex);
@@ -31,11 +36,33 @@ public class StudioViewModelTests
         await running.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Equal(new UpscaleRequest(source, MediaKind.Video, 2, ContentProfile.Natural, work.Path,
-            Fast: true, RemoveAudio: true), processor.Request);
+            Fast: true, RemoveAudio: true, VideoQuality: VideoQuality.High), processor.Request);
         var item = Assert.Single(studio.Items);
         Assert.Equal(JobState.Completed, item.State);
         Assert.NotNull(item.Elapsed);
         Assert.Equal(3, item.OutputSizeBytes);
+
+        var restored = Restart();
+        var restoredItem = Assert.Single(restored.Items);
+        Assert.Equal(JobState.Completed, restoredItem.State);
+        Assert.Equal(source, restoredItem.Path);
+        Assert.Equal(item.Output, restoredItem.Output);
+        Assert.Equal(item.Elapsed, restoredItem.Elapsed);
+        Assert.Equal(item.OutputSizeBytes, restoredItem.OutputSizeBytes);
+        Assert.Equal((int)VideoQuality.High, restored.VideoQualityIndex);
+        Assert.Same(restoredItem, restored.Selected);
+        restored.CompareFilesCommand.Execute(restoredItem);
+        Assert.Equal(new FileComparison(source, item.Output!, MediaKind.Video, null), dialogs.Comparison);
+
+        File.Delete(restoredItem.Output!);
+        var withoutOutput = Restart();
+        Assert.Equal(JobState.Waiting, Assert.Single(withoutOutput.Items).State);
+        Assert.Null(withoutOutput.Selected!.Output);
+        withoutOutput.RemoveCommand.Execute(null);
+        Assert.Empty(Restart().Items);
+
+        StudioViewModel Restart() => new(processor, new EmptyPreview(), new UnusedVideoPreview(),
+            dialogs, new TestLanguage(), settings, new(work.Path, "queue.json"));
     }
 
     private sealed class MemorySettings(AppSettings initial) : ISettingsStore
@@ -81,12 +108,17 @@ public class StudioViewModelTests
             IProgress<UpscaleProgress> progress, CancellationToken token) => throw new NotSupportedException();
     }
 
-    private sealed class UnusedDialogs : IStudioDialogs
+    private sealed class TestDialogs : IStudioDialogs
     {
+        public FileComparison? Comparison { get; private set; }
         public string[] PickFiles() => [];
         public string? PickFolder(string? current) => null;
         public VideoSegment? PickSegment(string name, VideoSegment? previous) => null;
-        public FileComparison? PickComparisonFiles(FileComparison? initial) => null;
+        public FileComparison? PickComparisonFiles(FileComparison? initial)
+        {
+            Comparison = initial;
+            return null;
+        }
         public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) => throw new NotSupportedException();
         public void ShowComparison(ComparisonClip clip, string name) => throw new NotSupportedException();
         public void ShowError(string name, string error) => throw new NotSupportedException();

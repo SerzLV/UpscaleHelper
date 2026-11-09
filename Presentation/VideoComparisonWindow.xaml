@@ -13,6 +13,8 @@
         <StackPanel Margin="0,0,0,11">
             <TextBlock Text="{DynamicResource PlaybackComparison}" FontSize="22" FontWeight="SemiBold"/>
             <TextBlock x:Name="FileLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+            <TextBlock x:Name="ExportEstimate" Style="{StaticResource MutedText}" Visibility="Collapsed" Margin="0,4,0,0"
+                       ToolTip="{DynamicResource ExportEstimateTip}"/>
         </StackPanel>
         <Border Grid.Row="1" Style="{StaticResource Card}" Padding="9">
             <DockPanel>

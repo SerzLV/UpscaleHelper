@@ -96,13 +96,20 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             token, readOutput: readFrames);
 
     public async Task EncodeAsync(string source, string target, VideoInfo info, int scale, bool resize,
-        VideoSegment? segment, bool removeAudio, CancellationToken token, Func<Stream, CancellationToken, Task> writeFrames)
+        VideoSegment? segment, bool removeAudio, VideoQuality quality, CancellationToken token,
+        Func<Stream, CancellationToken, Task> writeFrames)
     {
         bool fitsNvenc = Math.Max(info.Width, info.Height) * (long)scale <= 4096 &&
             Math.Min(info.Width, info.Height) * (long)scale >= 256;
+        var (crf, cq) = quality switch
+        {
+            VideoQuality.Compact => ("27", "27"),
+            VideoQuality.High => ("14", "15"),
+            _ => ("18", "19")
+        };
         string[] codec = fitsNvenc && await HasNvencAsync(token)
-            ? ["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", "19", "-b:v", "0"]
-            : ["-c:v", "libx264", "-preset", "fast", "-crf", "18"];
+            ? ["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", cq, "-b:v", "0"]
+            : ["-c:v", "libx264", "-preset", "fast", "-crf", crf];
         string filters = (resize ? "scale=iw/2:ih/2:flags=lanczos," : "") +
             "pad=ceil(iw/2)*2:ceil(ih/2)*2,scale=out_color_matrix=bt709,setsar=1";
         string[] audioSource = removeAudio ? [] : [.. Seek(segment), .. Limit(segment), "-i", source];
@@ -115,7 +122,7 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             token, writeInput: writeFrames);
     }
 
-    public async Task BuildComparisonAsync(string source, string enhanced, string output,
+    public async Task<VideoInfo> BuildComparisonAsync(string source, string enhanced, string output,
         VideoSegment? sourceSegment, VideoSegment? enhancedSegment,
         IProgress<UpscaleProgress>? progress, CancellationToken token)
     {
@@ -154,6 +161,7 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
                     progress.Report(new(T("PreparingComparison"), Math.Clamp(microseconds / 10_000.0 / total, 0, 99)));
                 }
             });
+        return result;
     }
 
     private static string NormalizeFrames(string frameRate) =>

@@ -189,4 +189,11 @@
   <data name="WeightsNotFound" xml:space="preserve"><value>Could not find weights for model {0}.</value></data>
   <data name="ToolStartFailed" xml:space="preserve"><value>Could not start {0}. Check its installation.</value></data>
   <data name="ToolFailed" xml:space="preserve"><value>{0} exited with an error ({1}).</value></data>
+  <data name="VideoQualityHeading" xml:space="preserve"><value>MP4 export quality</value></data>
+  <data name="VideoQualityCompact" xml:space="preserve"><value>Compact</value></data>
+  <data name="VideoQualityBalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="VideoQualityHigh" xml:space="preserve"><value>High quality</value></data>
+  <data name="ExportEstimate" xml:space="preserve"><value>Estimated full export size · ≈ {0}</value></data>
+  <data name="ExportEstimateTip" xml:space="preserve"><value>Based on this sample and the current export settings. The size varies with the content of the full video.</value></data>
+  <data name="MissingSource" xml:space="preserve"><value>The original file is unavailable. Check its folder or drive.</value></data>
 </root>

@@ -2,9 +2,11 @@ namespace UpscaleHelper.Processing;
 
 public enum MediaKind { Image, Video }
 public enum ContentProfile { Natural, Animation }
+public enum VideoQuality { Compact, Balanced, High }
 
 public sealed record UpscaleRequest(string Source, MediaKind Kind, int Scale, ContentProfile Profile,
-    string? DestinationFolder, bool Fast = false, VideoSegment? Segment = null, bool RemoveAudio = false);
+    string? DestinationFolder, bool Fast = false, VideoSegment? Segment = null, bool RemoveAudio = false,
+    VideoQuality VideoQuality = VideoQuality.Balanced);
 
 public sealed record VideoSegment(TimeSpan Start, TimeSpan Length);
 

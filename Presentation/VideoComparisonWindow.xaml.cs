@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using UpscaleHelper.Processing;
 
@@ -14,8 +13,8 @@ public partial class VideoComparisonWindow : Window
     private readonly ComparisonClip clip;
     private readonly IVideoFrameProvider frames;
     private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(60) };
-    private readonly Dictionary<int, BitmapSource> cachedFrames = [];
-    private readonly Queue<int> cachedOrder = [];
+    private readonly ComparisonViewModel frameComparison = new();
+    private int? loadedFrame;
     private CancellationTokenSource? frameLoad;
     private Task frameTask = Task.CompletedTask;
     private int frameIndex;
@@ -29,6 +28,7 @@ public partial class VideoComparisonWindow : Window
         this.clip = clip;
         this.frames = frames;
         InitializeComponent();
+        FrameComparison.DataContext = frameComparison;
         FileLabel.Text = name;
         FileLabel.ToolTip = name;
         timer.Tick += (_, _) =>
@@ -92,6 +92,7 @@ public partial class VideoComparisonWindow : Window
 
         frameLoad?.Cancel();
         FrameLayer.Visibility = Visibility.Collapsed;
+        PlaybackLabels.Visibility = Visibility.Visible;
         int start = frameIndex == LastFrame ? 0 : frameIndex;
         SetFrameIndex(start);
         Player.Position = clip.PositionOf(start);
@@ -118,7 +119,8 @@ public partial class VideoComparisonWindow : Window
 
     private void OnFrameKey(object sender, KeyEventArgs e)
     {
-        if (Keyboard.Modifiers != ModifierKeys.None || e.Key is not (Key.Left or Key.Right)) return;
+        if (FrameComparison.IsKeyboardFocusWithin || Keyboard.Modifiers != ModifierKeys.None ||
+            e.Key is not (Key.Left or Key.Right)) return;
         Step(e.Key == Key.Left ? -1 : 1);
         e.Handled = true;
     }
@@ -155,16 +157,16 @@ public partial class VideoComparisonWindow : Window
         PlayButton.Content = index == LastFrame ? T("Replay") : T("Resume");
         SetFrameIndex(index);
         FrameLayer.Visibility = Visibility.Visible;
+        PlaybackLabels.Visibility = Visibility.Collapsed;
         frameLoad?.Cancel();
-        if (cachedFrames.TryGetValue(index, out var cached))
+        if (loadedFrame == index)
         {
-            DisplayFrame(cached);
+            FrameStatus.Visibility = Visibility.Collapsed;
             return;
         }
 
-        FrameImage.Source = null;
         FrameMessage.Text = T("LoadingFrame");
-        FrameMessage.Visibility = Visibility.Visible;
+        FrameStatus.Visibility = Visibility.Visible;
         frameTask = LoadFrameAsync(index, frameTask);
     }
 
@@ -176,19 +178,13 @@ public partial class VideoComparisonWindow : Window
         {
             await previous;
             await Task.Delay(45, request.Token);
-            var bitmap = await Task.Run(async () =>
-            {
-                byte[] bytes = await frames.ReadFrameAsync(clip, index, request.Token);
-                using var stream = new MemoryStream(bytes);
-                var image = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                image.Freeze();
-                return image;
-            }, request.Token);
+            var original = LoadSideAsync(clip.Original);
+            var enhanced = LoadSideAsync(clip.Enhanced);
+            await Task.WhenAll(original, enhanced);
             request.Token.ThrowIfCancellationRequested();
-            if (cachedFrames.Count == 8) cachedFrames.Remove(cachedOrder.Dequeue());
-            cachedFrames.Add(index, bitmap);
-            cachedOrder.Enqueue(index);
-            DisplayFrame(bitmap);
+            frameComparison.ShowFrames(await original, await enhanced);
+            loadedFrame = index;
+            FrameStatus.Visibility = Visibility.Collapsed;
         }
         catch (OperationCanceledException) when (request.IsCancellationRequested) { }
         catch (Exception ex)
@@ -199,12 +195,9 @@ public partial class VideoComparisonWindow : Window
         {
             if (frameLoad == request) frameLoad = null;
         }
-    }
 
-    private void DisplayFrame(BitmapSource image)
-    {
-        FrameImage.Source = image;
-        FrameMessage.Visibility = Visibility.Collapsed;
+        Task<PreviewImage> LoadSideAsync(ComparisonTrack track) => Task.Run(async () =>
+            PreviewImage.Decode(await frames.ReadFrameAsync(clip, track, index, request.Token)), request.Token);
     }
 
     private async void OnClosing(object? sender, CancelEventArgs e)

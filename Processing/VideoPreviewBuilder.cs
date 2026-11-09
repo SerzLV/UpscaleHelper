@@ -10,12 +10,24 @@ internal interface IVideoPreviewBuilder
 
 internal interface IVideoFrameProvider
 {
-    Task<byte[]> ReadFrameAsync(ComparisonClip clip, int index, CancellationToken token);
+    Task<PreviewFrame> ReadFrameAsync(ComparisonClip clip, ComparisonTrack track, int index, CancellationToken token);
 }
 
-internal sealed record ComparisonClip(string Path, int FrameCount, double FramesPerSecond)
+internal sealed record ComparisonTrack(string Path, TimeSpan Start);
+
+internal sealed record ComparisonClip(string Path, int FrameCount, string FrameRate, double FramesPerSecond,
+    ComparisonTrack Original, ComparisonTrack Enhanced)
 {
     public TimeSpan PositionOf(int index) => TimeSpan.FromSeconds(index / FramesPerSecond);
+
+    public (TimeSpan Seek, int RelativeIndex) FrameWindow(ComparisonTrack track, int index)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, FrameCount);
+        // A preroll on the same output frame grid gives the FPS filter context for VFR and interlaced sources.
+        int anchor = Math.Max(0, index - (int)Math.Ceiling(2 * FramesPerSecond));
+        return (track.Start + PositionOf(anchor), index - anchor);
+    }
 }
 
 internal sealed class VideoPreview(TemporaryFolder folder, ComparisonClip clip) : IDisposable
@@ -28,7 +40,7 @@ internal sealed class VideoPreviewBuilder(IUpscaleProcessor processor, MediaTool
 {
     public Task<VideoPreview> BuildAsync(UpscaleRequest request, VideoSegment segment,
         IProgress<UpscaleProgress> progress, CancellationToken token) =>
-        PrepareAsync(async (folder, playback) =>
+        PrepareAsync(new(request.Source, segment.Start), async (folder, playback) =>
         {
             string result = await processor.ProcessAsync(request with
             {
@@ -37,24 +49,29 @@ internal sealed class VideoPreviewBuilder(IUpscaleProcessor processor, MediaTool
             }, progress, token);
             progress.Report(new(T("PreparingComparison"), 99));
             await media.BuildComparisonAsync(request.Source, result, playback, segment, null, null, token);
+            return new ComparisonTrack(result, TimeSpan.Zero);
         }, token);
 
     public Task<VideoPreview> CompareAsync(string original, string enhanced, VideoSegment? segment,
         IProgress<UpscaleProgress> progress, CancellationToken token) =>
-        PrepareAsync((_, playback) =>
-            media.BuildComparisonAsync(original, enhanced, playback, segment, segment, progress, token), token);
+        PrepareAsync(new(original, segment?.Start ?? TimeSpan.Zero), async (_, playback) =>
+        {
+            await media.BuildComparisonAsync(original, enhanced, playback, segment, segment, progress, token);
+            return new ComparisonTrack(enhanced, segment?.Start ?? TimeSpan.Zero);
+        }, token);
 
-    private async Task<VideoPreview> PrepareAsync(Func<string, string, Task> build, CancellationToken token)
+    private async Task<VideoPreview> PrepareAsync(ComparisonTrack original,
+        Func<string, string, Task<ComparisonTrack>> build, CancellationToken token)
     {
         var folder = new TemporaryFolder(Path.GetTempPath());
         try
         {
             string playback = Path.Combine(folder.Path, "comparison.mp4");
-            await build(folder.Path, playback);
+            var enhanced = await build(folder.Path, playback);
             var info = await media.ProbeAsync(playback, token);
             if (info.FrameCount <= 0)
                 throw new InvalidDataException(T("FrameCountError"));
-            return new VideoPreview(folder, new(playback, info.FrameCount, info.FramesPerSecond));
+            return new VideoPreview(folder, new(playback, info.FrameCount, info.FrameRate, info.FramesPerSecond, original, enhanced));
         }
         catch
         {

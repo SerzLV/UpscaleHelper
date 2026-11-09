@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="UpscaleHelper.csproj" />
+  <Project Path="Tests/UpscaleHelper.Tests.csproj" />
 </Solution>

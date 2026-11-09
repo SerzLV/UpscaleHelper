@@ -8,7 +8,9 @@
     <ApplicationIcon>Assets/UpscaleHelper.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Tests/**/*.cs"/>
     <Resource Include="Assets/UpscaleHelper.ico"/>
+    <InternalsVisibleTo Include="UpscaleHelper.Tests"/>
   </ItemGroup>
   <ItemGroup Condition="'$(CopyLocalTools)' != 'false'">
     <None Update="tools/realesrgan/realesrgan-ncnn-vulkan.exe;tools/realesrgan/vcomp140.dll;tools/realesrgan/models/*.bin;tools/realesrgan/models/*.param;tools/realesrgan/LICENSE;tools/waifu2x/waifu2x-ncnn-vulkan.exe;tools/waifu2x/models-upconv_7_photo/*;tools/waifu2x/LICENSE;tools/ffmpeg/*.exe"

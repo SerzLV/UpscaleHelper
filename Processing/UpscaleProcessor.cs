@@ -1,3 +1,5 @@
+using UpscaleHelper.Infrastructure;
+
 namespace UpscaleHelper.Processing;
 
 internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) : IUpscaleProcessor
@@ -12,6 +14,7 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
         string extension = request.Kind == MediaKind.Image ? ".png" : ".mp4";
         string staged = Path.Combine(work.Path, "result" + extension);
         var model = engine.Select(request);
+        DiagnosticLog.Write($"Processing {request.Kind} at {request.Scale}x using {model.WeightName}.");
         if (request.Kind == MediaKind.Image)
             await ProcessImageAsync(request, model, work.Path, staged, progress, cancellationToken);
         else
@@ -21,7 +24,9 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
         if (!File.Exists(staged) || new FileInfo(staged).Length == 0)
             throw new IOException(T("MissingOutput"));
         string stem = $"{Path.GetFileNameWithoutExtension(request.Source)}_x{request.Scale}";
-        return Publish(staged, folder, stem, extension);
+        string result = Publish(staged, folder, stem, extension);
+        DiagnosticLog.Write($"Published {request.Kind} result.");
+        return result;
     }
 
     private async Task ProcessImageAsync(UpscaleRequest request, UpscaleModel model, string work, string output,
@@ -32,6 +37,8 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
         string enhanced = resize ? Path.Combine(work, "enhanced.png") : output;
         progress.Report(new(T("PreparingImage"), 5));
         await media.NormalizeImageAsync(request.Source, input, token);
+        var (width, height) = PngPhotoMetadata.Dimensions(input);
+        OutputLimits.Validate(width, height, request.Scale, model.NativeScale, request.Kind);
         progress.Report(new(T("GpuUpscale"), null));
         await engine.RunAsync(model, input, enhanced, token);
         if (!File.Exists(enhanced))
@@ -41,6 +48,7 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
             progress.Report(new(T("SavingPng"), 95));
             await media.ResizeImageAsync(enhanced, output, token);
         }
+        PngPhotoMetadata.Restore(input, output, token);
     }
 
     private async Task ProcessVideoAsync(UpscaleRequest request, UpscaleModel model, string work, string output,
@@ -48,6 +56,7 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
     {
         progress.Report(new(T("ReadingVideo"), null));
         VideoInfo info = await media.ProbeAsync(request.Source, token);
+        OutputLimits.Validate(info.Width, info.Height, request.Scale, model.NativeScale, request.Kind);
         double duration = info.Duration;
         if (request.Segment is { } clip)
         {
@@ -77,6 +86,11 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
                     while (count < batchSize && await reader.ReadAsync(FramePath(original, count), decodeToken))
                         count++;
                     if (count == 0) break;
+                    if (processed == 0)
+                    {
+                        var (width, height) = PngPhotoMetadata.Dimensions(FramePath(original, 0));
+                        OutputLimits.Validate(width, height, request.Scale, model.NativeScale, request.Kind);
+                    }
 
                     int completed = processed;
                     timing.Report(completed);
@@ -103,7 +117,7 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
 
     private static string FramePath(string folder, int index) => Path.Combine(folder, $"frame-{index:D4}.png");
 
-    private static string Publish(string staged, string folder, string stem, string extension)
+    internal static string Publish(string staged, string folder, string stem, string extension)
     {
         for (int suffix = 1; ; suffix++)
         {

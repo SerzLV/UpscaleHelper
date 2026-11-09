@@ -183,6 +183,8 @@
   <data name="PlaybackFailed" xml:space="preserve"><value>Windows could not play this video. Frame-by-frame viewing is available. {0}</value></data>
   <data name="ReadFrameFailed" xml:space="preserve"><value>Could not read the frame. {0}</value></data>
   <data name="MissedFrame" xml:space="preserve"><value>The upscaler skipped frame {0}.</value></data>
+  <data name="VideoSizeLimit" xml:space="preserve"><value>The requested video size ({0} × {1}) exceeds the export limit of 8,192 pixels per side or 36 MP. Choose a smaller scale.</value></data>
+  <data name="ModelSizeLimit" xml:space="preserve"><value>The model would produce a {0} × {1} frame, above its processing limit. Choose a smaller scale or Fast 2×.</value></data>
   <data name="EngineNotFound" xml:space="preserve"><value>{0} was not found. Check the tools folder next to the application.</value></data>
   <data name="WeightsNotFound" xml:space="preserve"><value>Could not find weights for model {0}.</value></data>
   <data name="ToolStartFailed" xml:space="preserve"><value>Could not start {0}. Check its installation.</value></data>

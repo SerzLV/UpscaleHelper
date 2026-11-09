@@ -1,16 +1,15 @@
-using System.Diagnostics;
-
 namespace UpscaleHelper.Processing;
 
-internal sealed class FrameTiming(int? estimatedTotal, IProgress<UpscaleProgress> progress)
+internal sealed class FrameTiming(int? estimatedTotal, IProgress<UpscaleProgress> progress, TimeProvider? clock = null)
 {
-    private readonly Stopwatch clock = Stopwatch.StartNew();
+    private readonly TimeProvider clock = clock ?? TimeProvider.System;
+    private readonly long started = (clock ?? TimeProvider.System).GetTimestamp();
     private readonly Queue<(int Count, double Seconds)> samples = new([(0, 0.0)]);
     private double lastReport = -1;
 
     public void Report(int count, bool force = false)
     {
-        double now = clock.Elapsed.TotalSeconds;
+        double now = clock.GetElapsedTime(started).TotalSeconds;
         if (!force && now - lastReport < 0.3) return;
         lastReport = now;
         samples.Enqueue((count, now));

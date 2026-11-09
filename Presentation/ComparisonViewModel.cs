@@ -1,9 +1,8 @@
-using System.Windows.Media.Imaging;
 using UpscaleHelper.Processing;
 
 namespace UpscaleHelper.Presentation;
 
-internal sealed class ComparisonViewModel(IPreviewProvider previews) : ObservableModel
+internal sealed class ComparisonViewModel(IPreviewProvider? previews = null) : ObservableModel
 {
     private CancellationTokenSource? previewLoad;
     private PreviewImage? before;
@@ -31,6 +30,12 @@ internal sealed class ComparisonViewModel(IPreviewProvider previews) : Observabl
     public event EventHandler? ResetRequested;
 
     public void Cancel() => previewLoad?.Cancel();
+
+    public void ShowFrames(PreviewImage original, PreviewImage enhanced)
+    {
+        Before = original;
+        After = enhanced;
+    }
 
     public void RefreshLanguage()
     {
@@ -80,14 +85,9 @@ internal sealed class ComparisonViewModel(IPreviewProvider previews) : Observabl
         {
             var bitmap = await Task.Run(async () =>
             {
-                var preview = await previews.ReadAsync(path, token);
+                var preview = await previews!.ReadAsync(path, token);
                 token.ThrowIfCancellationRequested();
-                if (preview.Png.Length == 0) throw new InvalidDataException(T("NoImageInFile"));
-                using var stream = new MemoryStream(preview.Png);
-                var image = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                image.Freeze();
-                return new PreviewImage(image, preview.NativeWidth > 0 ? preview.NativeWidth : image.PixelWidth,
-                    preview.NativeHeight > 0 ? preview.NativeHeight : image.PixelHeight, FileSize.TryRead(path));
+                return PreviewImage.Decode(preview, FileSize.TryRead(path));
             }, token);
             if (!token.IsCancellationRequested) apply(bitmap, "");
         }

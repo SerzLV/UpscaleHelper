@@ -183,6 +183,8 @@
   <data name="PlaybackFailed" xml:space="preserve"><value>Windows не смог воспроизвести видео. Покадровый просмотр доступен. {0}</value></data>
   <data name="ReadFrameFailed" xml:space="preserve"><value>Не удалось прочитать кадр. {0}</value></data>
   <data name="MissedFrame" xml:space="preserve"><value>Движок апскейла пропустил кадр {0}.</value></data>
+  <data name="VideoSizeLimit" xml:space="preserve"><value>Размер видео {0} × {1} превышает лимит экспорта в 8 192 пикселя по стороне или 36 Мп. Выберите меньший масштаб.</value></data>
+  <data name="ModelSizeLimit" xml:space="preserve"><value>Модель создаст кадр {0} × {1}, превышающий лимит обработки. Выберите меньший масштаб или «Быстрый 2×».</value></data>
   <data name="EngineNotFound" xml:space="preserve"><value>Не найден {0}. Проверьте папку tools рядом с приложением.</value></data>
   <data name="WeightsNotFound" xml:space="preserve"><value>Не найдены веса модели {0}.</value></data>
   <data name="ToolStartFailed" xml:space="preserve"><value>Не удалось запустить {0}. Проверьте установку.</value></data>

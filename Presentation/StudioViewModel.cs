@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using UpscaleHelper.Infrastructure;
 using UpscaleHelper.Localization;
 using UpscaleHelper.Processing;
 
@@ -11,7 +12,8 @@ internal sealed class StudioViewModel : ObservableModel
     private readonly IPreviewProvider previews;
     private readonly IVideoPreviewBuilder videoPreviews;
     private readonly IStudioDialogs dialogs;
-    private readonly InterfaceLanguage language;
+    private readonly IInterfaceLanguage language;
+    private readonly ISettingsStore settings;
     private CancellationTokenSource? batch;
     private QueueItem? selected;
     private QueueItem? activeItem;
@@ -27,13 +29,19 @@ internal sealed class StudioViewModel : ObservableModel
     private VideoSegment? lastSegment;
 
     public StudioViewModel(IUpscaleProcessor processor, IPreviewProvider previews,
-        IVideoPreviewBuilder videoPreviews, IStudioDialogs dialogs, InterfaceLanguage language)
+        IVideoPreviewBuilder videoPreviews, IStudioDialogs dialogs, IInterfaceLanguage language, ISettingsStore settings)
     {
         this.processor = processor;
         this.previews = previews;
         this.videoPreviews = videoPreviews;
         this.dialogs = dialogs;
         this.language = language;
+        this.settings = settings;
+        var saved = settings.Current;
+        modelIndex = Math.Clamp(saved.ModelIndex, 0, 2);
+        scaleIndex = saved.ScaleIndex == 1 && modelIndex != 1 ? 1 : 0;
+        folder = Path.IsPathFullyQualified(saved.DestinationFolder ?? "") ? saved.DestinationFolder : null;
+        removeAudio = saved.RemoveAudio;
         Comparison = new ComparisonViewModel(previews);
         AddCommand = new(() => AddFiles(dialogs.PickFiles()), () => CanEdit);
         CompareFilesCommand = new(async parameter => await CompareFilesAsync(parameter as QueueItem), _ => CanEdit);
@@ -77,7 +85,11 @@ internal sealed class StudioViewModel : ObservableModel
     public bool CanEdit => !IsBusy;
     public bool HasItems => Items.Count > 0;
     public bool HasVideos => Items.Any(item => item.Kind == MediaKind.Video);
-    public bool RemoveAudio { get => removeAudio; set => Set(ref removeAudio, value); }
+    public bool RemoveAudio
+    {
+        get => removeAudio;
+        set { if (Set(ref removeAudio, value)) SaveSettings(); }
+    }
     public string CountLabel => Items.Count.ToString("D2");
     public string StartLabel => HasItems && !IsBusy && Items.All(item => item.State == JobState.Completed)
         ? T("RepeatSelected") : T("StartProcessing");
@@ -106,17 +118,18 @@ internal sealed class StudioViewModel : ObservableModel
     public int ScaleIndex
     {
         get => scaleIndex;
-        set => Set(ref scaleIndex, value == 1 && CanUseFourTimes ? 1 : 0);
+        set { if (Set(ref scaleIndex, value == 1 && CanUseFourTimes ? 1 : 0)) SaveSettings(); }
     }
     public int ModelIndex
     {
         get => modelIndex;
         set
         {
-            if (!Set(ref modelIndex, value)) return;
-            if (!CanUseFourTimes) ScaleIndex = 0;
+            if (value is < 0 or > 2 || !Set(ref modelIndex, value)) return;
+            if (!CanUseFourTimes) Set(ref scaleIndex, 0, nameof(ScaleIndex));
             Notify(nameof(ModelHint));
             Notify(nameof(CanUseFourTimes));
+            SaveSettings();
         }
     }
 
@@ -136,10 +149,18 @@ internal sealed class StudioViewModel : ObservableModel
             if (!Set(ref folder, value)) return;
             Notify(nameof(FolderLabel));
             ResetFolderCommand.Refresh();
+            SaveSettings();
         }
     }
 
     public string FolderLabel => Folder ?? T("DefaultOutputFolder");
+    private void SaveSettings() => settings.Update(value => value with
+    {
+        ModelIndex = modelIndex,
+        ScaleIndex = scaleIndex,
+        DestinationFolder = folder,
+        RemoveAudio = removeAudio
+    });
     public string Status => status();
     public string Metrics { get => metrics; private set => Set(ref metrics, value); }
     public double? Percent

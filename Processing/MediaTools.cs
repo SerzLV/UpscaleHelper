@@ -40,20 +40,33 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             seconds = ReadDuration(format);
         int width = video.GetProperty("width").GetInt32();
         int height = video.GetProperty("height").GetInt32();
-        if (TryFrameRate(Value(video, "sample_aspect_ratio")?.Replace(':', '/') ?? "", out double sar))
-            width = (int)Math.Round(width * sar);
+        if (TryRatio(Value(video, "sample_aspect_ratio")?.Replace(':', '/') ?? "", out double sar))
+            width = (int)Math.Clamp(Math.Round(width * sar), 1, int.MaxValue);
         _ = int.TryParse(Value(video, "nb_frames"), CultureInfo.InvariantCulture, out int frameCount);
         return new VideoInfo(frameRate, fps, seconds, width, height, frameCount);
     }
 
-    public async Task<PreviewFrame> ReadAsync(string path, CancellationToken cancellationToken)
+    public Task<PreviewFrame> ReadAsync(string path, CancellationToken cancellationToken) =>
+        ReadPreviewAsync(path, [], "", cancellationToken);
+
+    public async Task<PreviewFrame> ReadFrameAsync(ComparisonClip clip, ComparisonTrack track, int index, CancellationToken token)
+    {
+        var (seek, relative) = clip.FrameWindow(track, index);
+        var frame = await ReadPreviewAsync(track.Path, ["-ss", Seconds(seek.TotalSeconds)],
+            $"{NormalizeFrames(clip.FrameRate)},select=eq(n\\,{relative.ToString(CultureInfo.InvariantCulture)}),", token);
+        if (frame.Png.Length == 0) throw new InvalidDataException(T("FrameUnavailable"));
+        return frame;
+    }
+
+    private async Task<PreviewFrame> ReadPreviewAsync(string path, string[] inputOptions, string filterPrefix,
+        CancellationToken cancellationToken)
     {
         using var bytes = new MemoryStream();
         int width = 0, height = 0;
         const string nativeSize = "lte(iw*ih,40000000)*lte(max(iw,ih),8192)";
-        string filter = $"showinfo=checksum=0,scale=w='if({nativeSize},iw,min(4096,iw))':h='if({nativeSize},ih,min(4096,ih))':force_original_aspect_ratio=decrease,setsar=1";
+        string filter = $"{filterPrefix}showinfo=checksum=0,scale=w='if({nativeSize},iw,min(4096,iw))':h='if({nativeSize},ih,min(4096,ih))':force_original_aspect_ratio=decrease,setsar=1";
         await runner.RunAsync(paths.Ffmpeg, ["-hide_banner", "-loglevel", "info", "-nostdin",
-            "-i", path, "-map", "0:V:0", "-frames:v", "1", "-vf", filter,
+            .. inputOptions, "-i", path, "-map", "0:V:0", "-frames:v", "1", "-vf", filter, "-fps_mode", "passthrough",
             "-c:v", "png", "-threads", "1", "-f", "image2pipe", "pipe:1"], cancellationToken,
             onErrorLine: line =>
             {
@@ -65,20 +78,6 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             },
             readOutput: (pipe, ct) => pipe.CopyToAsync(bytes, ct));
         return new(bytes.ToArray(), width, height);
-    }
-
-    public async Task<byte[]> ReadFrameAsync(ComparisonClip clip, int index, CancellationToken token)
-    {
-        if (index < 0 || index >= clip.FrameCount)
-            throw new ArgumentOutOfRangeException(nameof(index));
-        using var bytes = new MemoryStream();
-        // Seek between two timestamps so accurate seek returns the target CFR frame despite time-base rounding.
-        double seconds = Math.Max(0, (index - 0.25) / clip.FramesPerSecond);
-        await RunAsync(["-ss", Seconds(seconds), "-i", clip.Path, "-map", "0:V:0", "-frames:v", "1",
-            "-fps_mode", "passthrough", "-c:v", "png", "-threads", "1", "-f", "image2pipe", "pipe:1"],
-            token, readOutput: (pipe, ct) => pipe.CopyToAsync(bytes, ct));
-        if (bytes.Length == 0) throw new InvalidDataException(T("FrameUnavailable"));
-        return bytes.ToArray();
     }
 
     public Task NormalizeImageAsync(string source, string target, CancellationToken token) =>
@@ -196,17 +195,19 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
         double.TryParse(Value(element, "duration"), CultureInfo.InvariantCulture, out var seconds) &&
         double.IsFinite(seconds) && seconds > 0 ? seconds : 0;
 
-    private static bool TryFrameRate(string value, out double rate)
+    internal static bool TryFrameRate(string value, out double rate) => TryRatio(value, out rate) && rate <= 240;
+
+    private static bool TryRatio(string value, out double rate)
     {
         var fields = value.Split('/');
         rate = 0;
-        if (!int.TryParse(fields[0], CultureInfo.InvariantCulture, out int numerator) || numerator <= 0)
+        if (fields.Length > 2 || !int.TryParse(fields[0], CultureInfo.InvariantCulture, out int numerator) || numerator <= 0)
             return false;
         int denominator = 1;
         if (fields.Length == 2 &&
             (!int.TryParse(fields[1], CultureInfo.InvariantCulture, out denominator) || denominator <= 0))
             return false;
         rate = (double)numerator / denominator;
-        return rate <= 240;
+        return true;
     }
 }

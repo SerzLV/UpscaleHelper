@@ -1,20 +1,32 @@
 using System.Collections;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Markup;
+using UpscaleHelper.Infrastructure;
 
 namespace UpscaleHelper.Localization;
 
-internal sealed class InterfaceLanguage
+internal interface IInterfaceLanguage
+{
+    bool IsEnglish { get; }
+    bool Select(bool english);
+}
+
+internal sealed class InterfaceLanguage : IInterfaceLanguage
 {
     private readonly ResourceDictionary appResources;
-    private readonly string preferencePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UpscaleHelper", "language.txt");
+    private readonly ISettingsStore settings;
     private ResourceDictionary? dictionary;
 
-    public InterfaceLanguage(ResourceDictionary appResources)
+    public InterfaceLanguage(ResourceDictionary appResources, ISettingsStore settings)
     {
         this.appResources = appResources;
-        Apply(ReadPreference());
+        this.settings = settings;
+        string? saved = settings.Current.Language;
+        string? preference = saved is "ru" or "en" ? saved : ReadLegacyPreference();
+        Apply(UseEnglish(preference, CultureInfo.CurrentUICulture));
+        if (saved is not ("ru" or "en") && preference is "ru" or "en")
+            settings.Update(value => value with { Language = preference });
     }
 
     public bool IsEnglish { get; private set; }
@@ -23,21 +35,22 @@ internal sealed class InterfaceLanguage
     {
         if (IsEnglish == english) return false;
         Apply(english);
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(preferencePath)!);
-            File.WriteAllText(preferencePath, english ? "en" : "ru");
-        }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
+        settings.Update(value => value with { Language = english ? "en" : "ru" });
         return true;
     }
 
-    private bool ReadPreference()
+    internal static bool UseEnglish(string? preference, CultureInfo culture) => preference switch
     {
-        try { return File.ReadAllText(preferencePath).Trim() == "en"; }
-        catch (IOException) { return false; }
-        catch (UnauthorizedAccessException) { return false; }
+        "en" => true,
+        "ru" => false,
+        _ => culture.TwoLetterISOLanguageName != "ru"
+    };
+
+    private static string? ReadLegacyPreference()
+    {
+        try { return File.ReadAllText(Path.Combine(AppStorage.Root, "language.txt")).Trim(); }
+        catch (IOException) { return null; }
+        catch (UnauthorizedAccessException) { return null; }
     }
 
     private void Apply(bool english)

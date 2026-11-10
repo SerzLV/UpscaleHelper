@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using UpscaleHelper.Infrastructure;
 
 namespace UpscaleHelper.Processing;
 
@@ -95,7 +97,7 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             "-c:v", "png", "-pix_fmt", "rgb24", "-threads", "2", "-f", "image2pipe", "pipe:1"],
             token, readOutput: readFrames);
 
-    public async Task EncodeAsync(string source, string target, VideoInfo info, int scale, bool resize,
+    public async Task<(string Encoder, TimeSpan Finish)> EncodeAsync(string source, string target, VideoInfo info, int scale, bool resize,
         VideoSegment? segment, bool removeAudio, VideoQuality quality, CancellationToken token,
         Func<Stream, CancellationToken, Task> writeFrames)
     {
@@ -107,19 +109,28 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
             VideoQuality.High => ("14", "15"),
             _ => ("18", "19")
         };
-        string[] codec = fitsNvenc && await HasNvencAsync(token)
-            ? ["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", cq, "-b:v", "0"]
-            : ["-c:v", "libx264", "-preset", "fast", "-crf", crf];
+        bool useNvenc = fitsNvenc && await HasNvencAsync(token);
+        string encoder = useNvenc ? "h264_nvenc" : "libx264";
+        string[] codec = useNvenc
+            ? ["-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", cq, "-b:v", "0"]
+            : ["-preset", "fast", "-crf", crf];
+        DiagnosticLog.Write($"Video encoder: {encoder} ({quality}).");
         string filters = (resize ? "scale=iw/2:ih/2:flags=lanczos," : "") +
             "pad=ceil(iw/2)*2:ceil(ih/2)*2,scale=out_color_matrix=bt709,setsar=1";
         string[] audioSource = removeAudio ? [] : [.. Seek(segment), .. Limit(segment), "-i", source];
         string[] audio = removeAudio ? ["-an"] : ["-map", "1:a?", "-c:a", "aac", "-b:a", "192k"];
 
+        long inputFinished = 0;
         await RunAsync(["-f", "image2pipe", "-framerate", info.FrameRate, "-c:v", "png", "-i", "pipe:0",
             .. audioSource, "-map", "0:v:0", .. audio, "-map_chapters", "-1",
-            "-vf", filters, .. codec, "-pix_fmt", "yuv420p",
+            "-vf", filters, "-c:v", encoder, .. codec, "-pix_fmt", "yuv420p",
             "-colorspace", "bt709", "-movflags", "+faststart", target],
-            token, writeInput: writeFrames);
+            token, writeInput: async (pipe, ct) =>
+            {
+                await writeFrames(pipe, ct);
+                inputFinished = Stopwatch.GetTimestamp();
+            });
+        return (encoder, Stopwatch.GetElapsedTime(inputFinished));
     }
 
     public async Task<VideoInfo> BuildComparisonAsync(string source, string enhanced, string output,

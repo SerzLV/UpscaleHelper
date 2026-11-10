@@ -1,12 +1,12 @@
 <h1 align="center">UpscaleHelper</h1>
-<p align="center"><strong>Local photo and video upscaling for Windows</strong></p>
+<p align="center"><strong>Local upscaling and photo restoration for Windows</strong></p>
 <p align="center">
   <a href="https://github.com/SerzLV/UpscaleHelper/releases/latest">Download for Windows</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="README.ru.md">На русском</a>
 </p>
 
-Upscale photos and videos on your GPU, compare results side by side or frame by frame, and save smaller WebP copies of your photos. Media processing stays on your PC.
+Upscale photos and videos on your GPU, restore blurred photos, and add detail with optional FLUX.2 Klein. Compare results with a wipe or frame by frame, then save a separate PNG, WebP, or MP4. Media processing stays on your PC.
 
 ![UpscaleHelper comparing a photo at 480 × 450 with its 960 × 900 result](docs/demo/comparison-en.png)
 
@@ -18,9 +18,10 @@ Upscale photos and videos on your GPU, compare results side by side or frame by 
 | **Photo comparison** | Use side by side, a draggable wipe, linked zoom, or a 1:1 view. Replace either photo in the same window or switch between the last ten pairs. |
 | **Photo compression** | Preview a lossless or smaller WebP at the same resolution, compare file sizes, and save a separate copy. The lossless mode supports 8-bit photos. |
 | **Photo restoration** | Open a photo and choose Improve photo for an automatic restoration preview with a wipe. Advanced settings include motion blur, strength, and optional 2× upscaling. |
+| **AI detail reconstruction** | Use optional FLUX.2 Klein 4B FP8. Keep the original colors and lighting by default, or switch to the uncorrected generation instantly in the comparison view. |
 | **Video comparison** | Try a 5- or 10-second clip with an estimate of the full export size, reopen a completed job, or load an existing pair. Pause or step through the source frames with linked zoom, a wipe, and a 1:1 view. |
 | **Batch queue** | See frame progress and estimated time left. The queue and its completed results are restored when you reopen the app. |
-| **Export options** | Save photos as PNG and SDR videos as H.264 MP4. Choose Compact, Balanced, or High quality for video and keep or remove audio. |
+| **Export options** | Save photos as PNG and SDR videos as H.264 MP4. Compatible NVIDIA setups use NVENC for export. Choose Compact, Balanced, or High quality for video and keep or remove audio. |
 
 ## Quick start
 
@@ -40,7 +41,13 @@ Click **Compress photo** in the toolbar to pick a file, or **Compress** in a pho
 
 Run `./setup-restoration.ps1` once from the app folder for CPU processing, or `./setup-restoration.ps1 -Device Nvidia` for CUDA. The script installs the [Restormer models](https://github.com/swz30/Restormer) and a private runtime under `%LocalAppData%\UpscaleHelper\restoration`. The NVIDIA download is several gigabytes. Once installed, click **Improve photo** in the toolbar and choose an image, or click **Improve** in a photo row. In the restoration window, click **Improve photo** to start. The app chooses between defocus correction and noise reduction, then shows the preview with a wipe at the original resolution. Use **Advanced settings** to change the mode, strength, or scale before saving an 8-bit PNG copy. Restoration runs locally and accepts inputs up to 16 megapixels or 8,192 pixels per side, whichever limit is reached first.
 
-**Draw details** is an optional experimental mode powered by [DiffBIR](https://github.com/XPixelGroup/DiffBIR). Install it with `./setup-restoration.ps1 -Device Nvidia -Generative`. It needs CUDA and downloads about 6.7 GB of additional model weights. It synthesizes texture and can change fine details. Try it on photos up to 2 MP, with a longest side of 1,600 pixels and an aspect ratio of 4:1 or less.
+**Draw details** uses FLUX.2 Klein 4B FP8 when a compatible local ComfyUI setup is registered. **Keep original colors and lighting** starts enabled. Toggle it on the comparison to see either version, then save the selected PNG. The model may change shapes or fine details. The FLUX path uses CUDA and supports up to 1 MP and 1,280 pixels on the longest side. [ComfyUI model and setup guide](https://docs.comfy.org/tutorials/flux/flux-2-klein)
+
+To connect a ComfyUI setup with its Python dependencies and the 4B FP8 weights installed, run `./setup-flux.ps1 -ComfyDirectory "C:\ComfyUI" -PythonPath "C:\ComfyUI\.venv\Scripts\python.exe"` and restart UpscaleHelper. Use `-ModelDirectory` if the weights are outside ComfyUI's `models` folder. The integration was tested with ComfyUI 0.44.0.
+
+FLUX starts on the first generation and stays loaded between photos until UpscaleHelper closes. Canceling an active FLUX generation stops its session. The next request loads it again.
+
+[DiffBIR](https://github.com/XPixelGroup/DiffBIR) is used when FLUX is unavailable or the input exceeds its size limits. Install it with `./setup-restoration.ps1 -Device Nvidia -Generative`. It needs CUDA and about 6.7 GB of additional weights. DiffBIR supports up to 2 MP and 1,600 pixels on the longest side. Both engines support aspect ratios up to 4:1.
 
 On first launch, the app uses Russian if Windows uses Russian and English otherwise. It remembers your language, model, scale, output folder, and video export settings. If processing fails, look for `%LocalAppData%\UpscaleHelper\logs\app.log`.
 
@@ -56,7 +63,7 @@ dotnet test -c Release
 
 You can also place `ffmpeg.exe` and `ffprobe.exe` in `tools/ffmpeg/`. The application looks beside the executable first, then uses PATH.
 
-In Visual Studio, open `UpscaleHelper.slnx`, choose the **UpscaleHelper** launch profile, and press **F5**.
+In Visual Studio, open `UpscaleHelper.slnx`, choose the **Debug** configuration and **UpscaleHelper** launch profile, and press **F5**.
 
 ## Demo and credits
 

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UpscaleHelper.Infrastructure;
 
 namespace UpscaleHelper.Processing;
@@ -54,8 +55,10 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
     private async Task ProcessVideoAsync(UpscaleRequest request, UpscaleModel model, string work, string output,
         IProgress<UpscaleProgress> progress, CancellationToken token)
     {
+        long started = Stopwatch.GetTimestamp();
         progress.Report(new(T("ReadingVideo"), null));
         VideoInfo info = await media.ProbeAsync(request.Source, token);
+        TimeSpan probe = Stopwatch.GetElapsedTime(started);
         OutputLimits.Validate(info.Width, info.Height, request.Scale, model.NativeScale, request.Kind);
         double duration = info.Duration;
         if (request.Segment is { } clip)
@@ -75,17 +78,23 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
         double estimate = Math.Ceiling(duration * info.FramesPerSecond);
         var timing = new FrameTiming(estimate is > 0 and <= int.MaxValue ? (int)estimate : null, progress);
         int processed = 0;
+        int batches = 0;
+        TimeSpan readPng = TimeSpan.Zero;
+        TimeSpan upscale = TimeSpan.Zero;
+        TimeSpan feedEncoder = TimeSpan.Zero;
 
-        await media.EncodeAsync(request.Source, output, info, request.Scale, resize, request.Segment,
+        var encoding = await media.EncodeAsync(request.Source, output, info, request.Scale, resize, request.Segment,
             request.RemoveAudio, request.VideoQuality, token,
             (encoder, encodeToken) => media.DecodeAsync(request.Source, info, request.Segment, encodeToken, async (decoder, decodeToken) =>
             {
                 var reader = new PngFrameReader(decoder);
                 while (true)
                 {
+                    long phaseStarted = Stopwatch.GetTimestamp();
                     int count = 0;
                     while (count < batchSize && await reader.ReadAsync(FramePath(original, count), decodeToken))
                         count++;
+                    readPng += Stopwatch.GetElapsedTime(phaseStarted);
                     if (count == 0) break;
                     if (processed == 0)
                     {
@@ -95,8 +104,11 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
 
                     int completed = processed;
                     timing.Report(completed);
+                    phaseStarted = Stopwatch.GetTimestamp();
                     await engine.RunAsync(model, original, enhanced, decodeToken, () => timing.Report(++completed));
+                    upscale += Stopwatch.GetElapsedTime(phaseStarted);
 
+                    phaseStarted = Stopwatch.GetTimestamp();
                     for (int i = 0; i < count; i++)
                     {
                         string frame = FramePath(enhanced, i);
@@ -107,6 +119,8 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
                         File.Delete(frame);
                         File.Delete(FramePath(original, i));
                     }
+                    feedEncoder += Stopwatch.GetElapsedTime(phaseStarted);
+                    batches++;
                     processed += count;
                     timing.Report(processed, force: true);
                 }
@@ -114,6 +128,9 @@ internal sealed class UpscaleProcessor(MediaTools media, FrameUpscaler engine) :
                     throw new InvalidDataException(T("NoDecodedFrames"));
                 timing.Finish(processed);
             }));
+        TimeSpan total = Stopwatch.GetElapsedTime(started);
+        DiagnosticLog.Write(FormattableString.Invariant(
+            $"Video pipeline: {info.Width}x{info.Height}, scale={request.Scale}x, model={model.WeightName}, native={model.NativeScale}x, encoder={encoding.Encoder}, frames={processed}, batches={batches}, probe={probe.TotalSeconds:F3}s, png_read={readPng.TotalSeconds:F3}s, upscale={upscale.TotalSeconds:F3}s, encoder_feed={feedEncoder.TotalSeconds:F3}s, encoder_finish={encoding.Finish.TotalSeconds:F3}s, total={total.TotalSeconds:F3}s."));
     }
 
     private static string FramePath(string folder, int index) => Path.Combine(folder, $"frame-{index:D4}.png");

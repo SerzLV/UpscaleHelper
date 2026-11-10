@@ -253,12 +253,19 @@
   <data name="RestorationError" xml:space="preserve"><value>Не удалось восстановить фото. {0}</value></data>
   <data name="RestorationSizeLimit" xml:space="preserve"><value>Для восстановления подходят фото до 16 Мп и 8 192 пикселей по стороне.</value></data>
   <data name="DrawDetails" xml:space="preserve"><value>Дорисовать детали</value></data>
-  <data name="DrawDetailsTip" xml:space="preserve"><value>Экспериментальный режим. DiffBIR создаёт новую фактуру и может изменить черты лица или мелкий текст.</value></data>
-  <data name="DrawDetailsSetupNeeded" xml:space="preserve"><value>Для дорисовки установи DiffBIR командой setup-restoration.ps1 -Device Nvidia -Generative из папки приложения.</value></data>
+  <data name="DrawDetailsTip" xml:space="preserve"><value>Экспериментальный режим. Модель создаёт новую фактуру и может изменить черты лица или мелкий текст.</value></data>
+  <data name="DrawDetailsSetupNeeded" xml:space="preserve"><value>Для дорисовки подключи локальный FLUX через setup-flux.ps1 или установи DiffBIR командой setup-restoration.ps1 -Device Nvidia -Generative.</value></data>
   <data name="DrawDetailsLoading" xml:space="preserve"><value>Загружаем модели DiffBIR…</value></data>
   <data name="DrawingDetails" xml:space="preserve"><value>Дорисовываем детали на GPU…</value></data>
   <data name="DrawDetailsReady" xml:space="preserve"><value>Предпросмотр DiffBIR готов. Проверь дорисованные детали через шторку перед сохранением.</value></data>
   <data name="DrawDetailsSizeLimit" xml:space="preserve"><value>Для дорисовки подходят фото до 2 Мп, до 1 600 пикселей по длинной стороне и с пропорциями не вытянутее 4:1.</value></data>
+  <data name="FluxKeepAppearance" xml:space="preserve"><value>Сохранять цвет и свет исходника</value></data>
+  <data name="FluxKeepAppearanceTip" xml:space="preserve"><value>Сохраняет оттенки и общую яркость исходника. Переключается без повторной генерации.</value></data>
+  <data name="FluxLoading" xml:space="preserve"><value>Загружаем FLUX.2 Klein 4B…</value></data>
+  <data name="FluxSessionEnded" xml:space="preserve"><value>Сеанс FLUX завершился до получения результата.</value></data>
+  <data name="FluxDrawing" xml:space="preserve"><value>Дорисовываем детали через FLUX…</value></data>
+  <data name="FluxReady" xml:space="preserve"><value>Предпросмотр FLUX готов. Сохранится вариант, выбранный галочкой.</value></data>
+  <data name="FluxSizeLimit" xml:space="preserve"><value>Для FLUX подходят фото до 1 Мп и 1 280 пикселей по длинной стороне.</value></data>
   <data name="PickPhotoForTool" xml:space="preserve"><value>Выбрать фото с диска</value></data>
   <data name="PhotoImproveShort" xml:space="preserve"><value>Улучшить</value></data>
   <data name="PhotoDrawShort" xml:space="preserve"><value>Дорисовать</value></data>

@@ -10,7 +10,7 @@
   <ItemGroup>
     <Compile Remove="Tests/**/*.cs"/>
     <Resource Include="Assets/UpscaleHelper.ico"/>
-    <None Update="Scripts/restore_photo.py;Scripts/draw_details.py;setup-restoration.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+    <None Update="Scripts/restore_photo.py;Scripts/draw_details.py;Scripts/flux_photo.py;setup-restoration.ps1;setup-flux.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
     <InternalsVisibleTo Include="UpscaleHelper.Tests"/>
   </ItemGroup>
   <ItemGroup Condition="'$(CopyLocalTools)' != 'false'">

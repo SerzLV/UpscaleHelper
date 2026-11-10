@@ -8,6 +8,8 @@ namespace UpscaleHelper;
 
 public partial class App : Application
 {
+    private PhotoRestorer? restorer;
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -21,12 +23,20 @@ public partial class App : Application
         var media = new MediaTools(paths, runner);
         var processor = new UpscaleProcessor(media, new FrameUpscaler(paths, runner));
         var queue = new LocalJsonFile<QueueEntry[]>(AppStorage.Root, "queue.json");
-        var restorer = new PhotoRestorer(media, runner, processor, Path.Combine(AppStorage.Root, "restoration"),
-            Path.Combine(AppContext.BaseDirectory, "Scripts", "restore_photo.py"));
+        string restoration = Path.Combine(AppStorage.Root, "restoration");
+        var flux = new LocalJsonFile<FluxRuntime>(restoration, "flux-runtime.json").Read();
+        restorer = new PhotoRestorer(media, runner, processor, restoration,
+            Path.Combine(AppContext.BaseDirectory, "Scripts", "restore_photo.py"), flux);
         var dialogs = new StudioDialogs(media, media, new PhotoCompressor(media, paths, runner), restorer, new PhotoComparisonHistory(AppStorage.Root));
         var studio = new StudioViewModel(processor, media, new VideoPreviewBuilder(processor, media), dialogs, language, settings, queue);
         MainWindow = new MainWindow(studio);
         MainWindow.Show();
         studio.AddFiles(e.Args.Where(File.Exists).Select(Path.GetFullPath));
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        restorer?.Dispose();
+        base.OnExit(e);
     }
 }

@@ -253,12 +253,19 @@
   <data name="RestorationError" xml:space="preserve"><value>Could not complete photo restoration. {0}</value></data>
   <data name="RestorationSizeLimit" xml:space="preserve"><value>Photo restoration supports input up to 16 megapixels and 8,192 pixels per side.</value></data>
   <data name="DrawDetails" xml:space="preserve"><value>Draw details</value></data>
-  <data name="DrawDetailsTip" xml:space="preserve"><value>Experimental. DiffBIR generates new textures and may change fine details such as facial features or text.</value></data>
-  <data name="DrawDetailsSetupNeeded" xml:space="preserve"><value>Install the optional DiffBIR model by running setup-restoration.ps1 -Device Nvidia -Generative from the app folder.</value></data>
+  <data name="DrawDetailsTip" xml:space="preserve"><value>Experimental. The model generates new textures and may change details such as facial features or text.</value></data>
+  <data name="DrawDetailsSetupNeeded" xml:space="preserve"><value>Connect a local FLUX setup with setup-flux.ps1 or install DiffBIR with setup-restoration.ps1 -Device Nvidia -Generative.</value></data>
   <data name="DrawDetailsLoading" xml:space="preserve"><value>Loading the DiffBIR models…</value></data>
   <data name="DrawingDetails" xml:space="preserve"><value>Drawing details on GPU…</value></data>
   <data name="DrawDetailsReady" xml:space="preserve"><value>DiffBIR preview ready. Use the wipe to inspect the generated details before saving.</value></data>
   <data name="DrawDetailsSizeLimit" xml:space="preserve"><value>Draw details supports photos up to 2 megapixels and 1,600 pixels on the longest side, with an aspect ratio of 4:1 or less.</value></data>
+  <data name="FluxKeepAppearance" xml:space="preserve"><value>Keep original colors and lighting</value></data>
+  <data name="FluxKeepAppearanceTip" xml:space="preserve"><value>Keeps the source colors and broad lighting. Switch versions without generating again.</value></data>
+  <data name="FluxLoading" xml:space="preserve"><value>Loading FLUX.2 Klein 4B…</value></data>
+  <data name="FluxSessionEnded" xml:space="preserve"><value>The FLUX session ended before returning a result.</value></data>
+  <data name="FluxDrawing" xml:space="preserve"><value>Drawing details with FLUX…</value></data>
+  <data name="FluxReady" xml:space="preserve"><value>FLUX preview ready. The checkbox determines which version is saved.</value></data>
+  <data name="FluxSizeLimit" xml:space="preserve"><value>FLUX supports photos up to 1 megapixel and 1,280 pixels on the longest side.</value></data>
   <data name="PickPhotoForTool" xml:space="preserve"><value>Choose a photo from disk</value></data>
   <data name="PhotoImproveShort" xml:space="preserve"><value>Improve</value></data>
   <data name="PhotoDrawShort" xml:space="preserve"><value>Draw details</value></data>

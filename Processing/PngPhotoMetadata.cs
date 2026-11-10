@@ -51,10 +51,11 @@ internal static class PngPhotoMetadata
         return (icc, exif);
     }
 
-    public static void Restore(string source, string result, CancellationToken token)
+    public static void Restore(string source, string result, CancellationToken token, bool copyColor = true)
     {
         var (width, height) = Dimensions(result);
         var chunks = ReadMetadata(source, width, height, token);
+        if (!copyColor) chunks.RemoveAll(chunk => Color.Contains(chunk.Type));
         if (chunks.Count == 0) return;
         var replaced = chunks.Select(chunk => chunk.Type).ToHashSet(StringComparer.Ordinal);
         if (replaced.Overlaps(Color)) replaced.UnionWith(Color);

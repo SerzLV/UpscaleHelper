@@ -43,6 +43,8 @@ internal sealed class ComparisonViewModel(IPreviewProvider? previews = null) : O
         After = enhanced;
     }
 
+    public void ShowResult(PreviewImage enhanced) => After = enhanced;
+
     public void RefreshLanguage()
     {
         Notify(nameof(BeforeHint));

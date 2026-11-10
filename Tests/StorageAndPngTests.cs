@@ -91,6 +91,28 @@ public class StorageAndPngTests
         Assert.False(PngPhotoMetadata.NormalizeExif(tiff[..12], 900, 960));
     }
 
+    [Fact]
+    public void CopiesPhotoMetadataWithoutReplacingGeneratedColor()
+    {
+        const string header = "89504E470D0A1A0A0000000D494844520000000100000001080200000000000000";
+        const string sourceGamma = "0000000467414D410000B18F00000000";
+        const string resultGamma = "0000000467414D410000AFC800000000";
+        const string title = "00000003744558744B005600000000";
+        const string end = "0000000049444154000000000000000049454E4400000000";
+        using var work = new TestDirectory();
+        string source = Path.Combine(work.Path, "source.png");
+        string result = Path.Combine(work.Path, "result.png");
+        File.WriteAllBytes(source, Convert.FromHexString(header + sourceGamma + title + end));
+        File.WriteAllBytes(result, Convert.FromHexString(header + resultGamma + end));
+
+        PngPhotoMetadata.Restore(source, result, CancellationToken.None, copyColor: false);
+
+        string output = Convert.ToHexString(File.ReadAllBytes(result));
+        Assert.Contains(resultGamma, output);
+        Assert.Contains("744558744B0056", output);
+        Assert.DoesNotContain(sourceGamma, output);
+    }
+
     [Theory]
     [InlineData(4)]  // LONG
     [InlineData(13)] // IFD

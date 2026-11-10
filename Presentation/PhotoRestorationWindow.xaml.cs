@@ -10,12 +10,16 @@ public partial class PhotoRestorationWindow : Window
 {
     private readonly string source;
     private readonly IPhotoRestorer restorer;
+    private readonly IPreviewProvider previews;
     private readonly ComparisonViewModel comparison;
     private readonly PhotoComparisonHistory history;
     private TemporaryFolder? temporary;
     private CancellationTokenSource? cancellation;
     private Task? job;
     private string? preview;
+    private RestorationResult? result;
+    private PreviewImage? correctedImage;
+    private PreviewImage? rawImage;
     private bool closing;
     private bool drewDetails;
     private bool DrawsDetails => MethodChoice.SelectedIndex == 1;
@@ -25,6 +29,7 @@ public partial class PhotoRestorationWindow : Window
     {
         this.source = source;
         this.restorer = restorer;
+        this.previews = previews;
         this.history = history;
         comparison = new ComparisonViewModel(previews);
         InitializeComponent();
@@ -54,15 +59,22 @@ public partial class PhotoRestorationWindow : Window
     {
         PreviewButton.SetResourceReference(ContentControl.ContentProperty, DrawsDetails ? "DrawDetails" : "RestorationStart");
         CorrectionOption.Visibility = DrawsDetails ? Visibility.Collapsed : Visibility.Visible;
+        bool flux = DrawsDetails && restorer.UsesFluxForDetails;
+        KeepAppearance.Visibility = flux ? Visibility.Visible : Visibility.Collapsed;
+        StrengthOption.Visibility = flux ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    private string PreviewHint() => !restorer.IsInstalled ? "RestorationSetupNeeded" :
-        DrawsDetails && !restorer.IsDrawDetailsInstalled ? "DrawDetailsSetupNeeded" : "RestorationStartHint";
+    private string PreviewHint() => DrawsDetails
+        ? restorer.IsDrawDetailsInstalled ? "RestorationStartHint" : "DrawDetailsSetupNeeded"
+        : restorer.IsInstalled ? "RestorationStartHint" : "RestorationSetupNeeded";
 
     private void OnOptionsChanged(object sender, RoutedEventArgs e)
     {
         if (preview is null) return;
         preview = null;
+        result = null;
+        correctedImage = rawImage = null;
+        UpdateMethod();
         comparison.ClearResult();
         UpdateActions(busy: false);
         string hint = PreviewHint();
@@ -72,15 +84,26 @@ public partial class PhotoRestorationWindow : Window
     private async void OnPreview(object sender, RoutedEventArgs e) =>
         await CreatePreviewAsync(DrawsDetails ? RestorationMode.DrawDetails : (RestorationMode)ModeBox.SelectedIndex);
 
+    private void OnAppearanceChanged(object sender, RoutedEventArgs e) => ApplyAppearance();
+
+    private void ApplyAppearance()
+    {
+        if (result?.RawFluxPath is not { } rawPath || correctedImage is null || rawImage is null) return;
+        bool keep = KeepAppearance.IsChecked == true;
+        preview = keep ? result.Path : rawPath;
+        comparison.ShowResult(keep ? correctedImage : rawImage);
+        StatusText.Text = T("FluxReady");
+    }
+
     private async Task CreatePreviewAsync(RestorationMode mode)
     {
         if (job is not null || closing) return;
-        if (!restorer.IsInstalled)
+        bool drawing = mode == RestorationMode.DrawDetails;
+        if (!drawing && !restorer.IsInstalled)
         {
             StatusText.Text = T("RestorationSetupNeeded");
             return;
         }
-        bool drawing = mode == RestorationMode.DrawDetails;
         if (drawing && !restorer.IsDrawDetailsInstalled)
         {
             StatusText.Text = T("DrawDetailsSetupNeeded");
@@ -101,17 +124,33 @@ public partial class PhotoRestorationWindow : Window
                 Progress.IsIndeterminate = update.Percent is null;
                 Progress.Value = update.Percent ?? 0;
             });
-            try { await Task.Run(() => restorer.RestoreAsync(source, staged, mode, strength, upscale, progress, token), token); }
+            RestorationResult generated;
+            try { generated = await Task.Run(() => restorer.RestoreAsync(source, staged, mode, strength, upscale, progress, token), token); }
             finally { processing = false; }
 
             token.ThrowIfCancellationRequested();
             StatusText.Text = T("LoadingPreview");
-            await comparison.LoadAsync(source, staged, resetZoom: false);
+            PreviewImage? alternate = null;
+            if (generated.RawFluxPath is { } rawPath)
+                alternate = await Task.Run(async () => PreviewImage.Decode(await previews.ReadAsync(rawPath, token),
+                    FileSize.TryRead(rawPath)), token);
+            await comparison.LoadAsync(source, generated.Path, resetZoom: false);
             token.ThrowIfCancellationRequested();
             if (comparison.After is null) throw new InvalidDataException(T("NoImageInFile"));
-            preview = staged;
+            preview = generated.Path;
             drewDetails = drawing;
-            StatusText.Text = T(drawing ? "DrawDetailsReady" : "RestorationReady");
+            result = generated;
+            if (alternate is not null)
+            {
+                correctedImage = comparison.After;
+                rawImage = alternate;
+                ApplyAppearance();
+            }
+            else
+            {
+                KeepAppearance.Visibility = Visibility.Collapsed;
+                StatusText.Text = T(drawing ? "DrawDetailsReady" : "RestorationReady");
+            }
         });
     }
 
@@ -170,6 +209,7 @@ public partial class PhotoRestorationWindow : Window
     private void UpdateActions(bool busy)
     {
         MethodChoice.IsEnabled = AdvancedOptions.IsEnabled = !busy && !closing;
+        KeepAppearance.IsEnabled = !busy && !closing;
         SaveButton.IsEnabled = !busy && !closing && preview is not null;
         SaveButton.Visibility = SaveButton.IsEnabled ? Visibility.Visible : Visibility.Collapsed;
         SaveButton.IsDefault = SaveButton.IsEnabled;

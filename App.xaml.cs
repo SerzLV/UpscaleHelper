@@ -21,7 +21,9 @@ public partial class App : Application
         var media = new MediaTools(paths, runner);
         var processor = new UpscaleProcessor(media, new FrameUpscaler(paths, runner));
         var queue = new LocalJsonFile<QueueEntry[]>(AppStorage.Root, "queue.json");
-        var dialogs = new StudioDialogs(media, media, new PhotoCompressor(media, paths, runner), new PhotoComparisonHistory(AppStorage.Root));
+        var restorer = new PhotoRestorer(media, runner, processor, Path.Combine(AppStorage.Root, "restoration"),
+            Path.Combine(AppContext.BaseDirectory, "Scripts", "restore_photo.py"));
+        var dialogs = new StudioDialogs(media, media, new PhotoCompressor(media, paths, runner), restorer, new PhotoComparisonHistory(AppStorage.Root));
         var studio = new StudioViewModel(processor, media, new VideoPreviewBuilder(processor, media), dialogs, language, settings, queue);
         MainWindow = new MainWindow(studio);
         MainWindow.Show();

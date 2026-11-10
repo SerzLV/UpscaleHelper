@@ -224,4 +224,34 @@
   <data name="CompressionBitDepthLimit" xml:space="preserve"><value>Lossless WebP supports up to 8 bits per channel. Keep the original or use Smaller WebP.</value></data>
   <data name="CompressionIccUnsupported" xml:space="preserve"><value>This color profile cannot be copied into the WebP file.</value></data>
   <data name="CompressionInvalidWebp" xml:space="preserve"><value>The encoder returned an invalid WebP file.</value></data>
+  <data name="RestorePhoto" xml:space="preserve"><value>Restore photo</value></data>
+  <data name="RestorationMode" xml:space="preserve"><value>Restoration mode</value></data>
+  <data name="RestorationAutomatic" xml:space="preserve"><value>Automatic</value></data>
+  <data name="RestorationAdvanced" xml:space="preserve"><value>Advanced settings</value></data>
+  <data name="RestorationStart" xml:space="preserve"><value>Improve photo</value></data>
+  <data name="RestorationStartHint" xml:space="preserve"><value>Choose Improve photo to generate a preview.</value></data>
+  <data name="RestorationFocus" xml:space="preserve"><value>Out of focus</value></data>
+  <data name="RestorationMotion" xml:space="preserve"><value>Motion blur</value></data>
+  <data name="RestorationNoise" xml:space="preserve"><value>Image noise</value></data>
+  <data name="RestorationStrength" xml:space="preserve"><value>Strength</value></data>
+  <data name="RestorationGentle" xml:space="preserve"><value>Gentle</value></data>
+  <data name="RestorationBalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="RestorationStrong" xml:space="preserve"><value>Strong</value></data>
+  <data name="RestorationOriginalSize" xml:space="preserve"><value>Original size</value></data>
+  <data name="RestorationSetupNeeded" xml:space="preserve"><value>Install the optional restoration engine by running setup-restoration.ps1 from the app folder. Use -Device Nvidia for CUDA acceleration.</value></data>
+  <data name="RestoringPhoto" xml:space="preserve"><value>Restoring photo…</value></data>
+  <data name="RestoringPhotoGpu" xml:space="preserve"><value>Restoring photo on GPU…</value></data>
+  <data name="RestoringPhotoCpu" xml:space="preserve"><value>Restoring photo on CPU…</value></data>
+  <data name="RestorationReady" xml:space="preserve"><value>Preview ready. Compare with the source before saving a copy.</value></data>
+  <data name="RestorationSave" xml:space="preserve"><value>Save PNG copy</value></data>
+  <data name="RestorationPngExtension" xml:space="preserve"><value>Save the copy with a .png extension.</value></data>
+  <data name="RestorationError" xml:space="preserve"><value>Could not complete photo restoration. {0}</value></data>
+  <data name="RestorationSizeLimit" xml:space="preserve"><value>Photo restoration supports input up to 16 megapixels and 8,192 pixels per side.</value></data>
+  <data name="DrawDetails" xml:space="preserve"><value>Draw details</value></data>
+  <data name="DrawDetailsTip" xml:space="preserve"><value>Experimental. DiffBIR generates new textures and may change fine details such as facial features or text.</value></data>
+  <data name="DrawDetailsSetupNeeded" xml:space="preserve"><value>Install the optional DiffBIR model by running setup-restoration.ps1 -Device Nvidia -Generative from the app folder.</value></data>
+  <data name="DrawDetailsLoading" xml:space="preserve"><value>Loading the DiffBIR models…</value></data>
+  <data name="DrawingDetails" xml:space="preserve"><value>Drawing details on GPU…</value></data>
+  <data name="DrawDetailsReady" xml:space="preserve"><value>DiffBIR preview ready. Use the wipe to inspect the generated details before saving.</value></data>
+  <data name="DrawDetailsSizeLimit" xml:space="preserve"><value>Draw details supports photos up to 2 megapixels and 1,600 pixels on the longest side, with an aspect ratio of 4:1 or less.</value></data>
 </root>

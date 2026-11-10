@@ -130,21 +130,10 @@ public partial class PhotoCompressionWindow : Window
 
         await RunAsync("CompressionSaving", async token =>
         {
-            await Task.Run(() => SaveCopyAsync(staged, target, token), token);
+            await Task.Run(() => PhotoCopy.SaveAsync(staged, target, token), token);
             history.Remember(new(source, target, MediaKind.Image, null));
             StatusText.Text = T("CompressionSaved", Path.GetFileName(target));
         });
-    }
-
-    private static async Task SaveCopyAsync(string staged, string target, CancellationToken token)
-    {
-        using var folder = new TemporaryFolder(Path.GetDirectoryName(target)!);
-        string pending = Path.Combine(folder.Path, "export.webp");
-        await using (var input = File.OpenRead(staged))
-        await using (var output = File.Create(pending))
-            await input.CopyToAsync(output, token);
-        token.ThrowIfCancellationRequested();
-        File.Move(pending, target);
     }
 
     private async Task RunAsync(string status, Func<CancellationToken, Task> operation)

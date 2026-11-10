@@ -30,6 +30,11 @@ public partial class ComparisonView : UserControl
         DataContextChanged += OnComparisonChanged;
     }
 
+    internal void ShowWipe()
+    {
+        if (WipeOption.IsEnabled) LayoutChoice.SelectedItem = WipeOption;
+    }
+
     private void OnComparisonChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (comparison is not null)

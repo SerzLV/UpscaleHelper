@@ -7,6 +7,24 @@ namespace UpscaleHelper.Tests;
 public class PhotoWorkflowTests
 {
     [Fact]
+    public async Task SavingPhotoCopyKeepsExistingFilesAndLeavesNoCanceledOutput()
+    {
+        using var work = new TestDirectory();
+        string preview = Path.Combine(work.Path, "preview.png");
+        string output = Path.Combine(work.Path, "restored.png");
+        string canceled = Path.Combine(work.Path, "canceled.png");
+        await File.WriteAllTextAsync(preview, "preview");
+        await PhotoCopy.SaveAsync(preview, output, CancellationToken.None);
+        await File.WriteAllTextAsync(preview, "new preview");
+
+        await Assert.ThrowsAsync<IOException>(() => PhotoCopy.SaveAsync(preview, output, CancellationToken.None));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => PhotoCopy.SaveAsync(preview, canceled, new(true)));
+        Assert.Equal("preview", await File.ReadAllTextAsync(output));
+        Assert.Equal("new preview", await File.ReadAllTextAsync(preview));
+        Assert.False(File.Exists(canceled));
+    }
+
+    [Fact]
     public void KeepsTenDistinctRecentPairsAndSkipsMissingFiles()
     {
         using var work = new TestDirectory();

@@ -13,13 +13,14 @@ internal interface IStudioDialogs
     FileComparison? PickComparisonFiles(FileComparison? initial);
     void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files);
     void ShowPhotoCompression(string? source);
+    void ShowPhotoRestoration();
     void ShowComparison(ComparisonClip clip, string name);
     void ShowError(string name, string error);
     void Reveal(string path);
 }
 
 internal sealed class StudioDialogs(IVideoFrameProvider frames, IPreviewProvider previews,
-    IPhotoCompressor compressor, PhotoComparisonHistory history) : IStudioDialogs
+    IPhotoCompressor compressor, IPhotoRestorer restorer, PhotoComparisonHistory history) : IStudioDialogs
 {
     public string[] PickFiles()
     {
@@ -57,6 +58,13 @@ internal sealed class StudioDialogs(IVideoFrameProvider frames, IPreviewProvider
         source ??= PickPhoto(owner, T("CompressPhoto"));
         if (source is null) return;
         new PhotoCompressionWindow(source, compressor, previews, history) { Owner = owner }.ShowDialog();
+    }
+
+    public void ShowPhotoRestoration()
+    {
+        var owner = Application.Current.MainWindow;
+        if (PickPhoto(owner, T("RestorePhoto")) is not { } source) return;
+        new PhotoRestorationWindow(source, restorer, previews, history) { Owner = owner }.ShowDialog();
     }
 
     internal static string? PickPhoto(Window owner, string title, string? current = null)

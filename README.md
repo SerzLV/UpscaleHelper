@@ -17,6 +17,7 @@ Upscale photos and videos on your GPU, compare results side by side or frame by 
 | **2× and 4× upscaling** | Choose Detail for photos and live-action footage, Fast 2× for shorter processing times, or Animation for drawn content. |
 | **Photo comparison** | Use side by side, a draggable wipe, linked zoom, or a 1:1 view. Replace either photo in the same window or switch between the last ten pairs. |
 | **Photo compression** | Preview a lossless or smaller WebP at the same resolution, compare file sizes, and save a separate copy. The lossless mode supports 8-bit photos. |
+| **Photo restoration** | Open a photo and choose Improve photo for an automatic restoration preview with a wipe. Advanced settings include motion blur, strength, and optional 2× upscaling. |
 | **Video comparison** | Try a 5- or 10-second clip with an estimate of the full export size, reopen a completed job, or load an existing pair. Pause or step through the source frames with linked zoom, a wipe, and a 1:1 view. |
 | **Batch queue** | See frame progress and estimated time left. The queue and its completed results are restored when you reopen the app. |
 | **Export options** | Save photos as PNG and SDR videos as H.264 MP4. Choose Compact, Balanced, or High quality for video and keep or remove audio. |
@@ -35,6 +36,12 @@ Use **Ctrl+P** to preview a selected video and **Ctrl+Shift+C** to compare files
 
 Choose **Reduce photo size** in the top bar or **Compress** next to a finished photo. Generate a preview, compare it with the source, and save a WebP copy. In **Smaller WebP** mode, type a quality from 1 to 100 or adjust it with **− / +** or **↑ / ↓**.
 
+### Optional photo restoration
+
+Run `./setup-restoration.ps1` once from the app folder for CPU processing, or `./setup-restoration.ps1 -Device Nvidia` for CUDA. The script installs the [Restormer models](https://github.com/swz30/Restormer) and a private runtime under `%LocalAppData%\UpscaleHelper\restoration`. The NVIDIA download is several gigabytes. Once installed, choose **Restore photo**, select an image, and click **Improve photo**. The app chooses between defocus correction and noise reduction, then shows the preview with a wipe at the original resolution. Use **Advanced settings** to change the mode, strength, or scale before saving an 8-bit PNG copy. Restoration runs locally and accepts inputs up to 16 megapixels or 8,192 pixels per side, whichever limit is reached first.
+
+**Draw details** is an optional experimental mode powered by [DiffBIR](https://github.com/XPixelGroup/DiffBIR). Install it with `./setup-restoration.ps1 -Device Nvidia -Generative`. It needs CUDA and downloads about 6.7 GB of additional model weights. It synthesizes texture and can change fine details. Try it on photos up to 2 MP, with a longest side of 1,600 pixels and an aspect ratio of 4:1 or less.
+
 On first launch, the app uses Russian if Windows uses Russian and English otherwise. It remembers your language, model, scale, output folder, and video export settings. If processing fails, look for `%LocalAppData%\UpscaleHelper\logs\app.log`.
 
 ## Build from source
@@ -48,6 +55,8 @@ dotnet test -c Release
 ```
 
 You can also place `ffmpeg.exe` and `ffprobe.exe` in `tools/ffmpeg/`. The application looks beside the executable first, then uses PATH.
+
+In Visual Studio, open `UpscaleHelper.slnx`, choose the **UpscaleHelper** launch profile, and press **F5**.
 
 ## Demo and credits
 

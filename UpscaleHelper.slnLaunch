@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "UpscaleHelper",
+    "Projects": [
+      {
+        "Path": "UpscaleHelper.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Tests\\UpscaleHelper.Tests.csproj",
+        "Action": "None"
+      }
+    ]
+  }
+]

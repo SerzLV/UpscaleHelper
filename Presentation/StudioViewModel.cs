@@ -59,6 +59,7 @@ internal sealed class StudioViewModel : ObservableModel
                 else SetStatus("MissingResult");
             }
         }, _ => CanEdit);
+        RestorePhotoCommand = new(dialogs.ShowPhotoRestoration, () => CanEdit);
         RemoveCommand = new(RemoveSelected, () => CanEdit && Selected is not null);
         FolderCommand = new(ChooseFolder, () => CanEdit);
         ResetFolderCommand = new(() => Folder = null, () => CanEdit && Folder is not null);
@@ -88,6 +89,7 @@ internal sealed class StudioViewModel : ObservableModel
     public StudioCommand AddCommand { get; }
     public StudioCommand CompareFilesCommand { get; }
     public StudioCommand CompressPhotoCommand { get; }
+    public StudioCommand RestorePhotoCommand { get; }
     public StudioCommand RemoveCommand { get; }
     public StudioCommand FolderCommand { get; }
     public StudioCommand ResetFolderCommand { get; }
@@ -505,6 +507,7 @@ internal sealed class StudioViewModel : ObservableModel
         AddCommand.Refresh();
         CompareFilesCommand.Refresh();
         CompressPhotoCommand.Refresh();
+        RestorePhotoCommand.Refresh();
         RemoveCommand.Refresh();
         FolderCommand.Refresh();
         ResetFolderCommand.Refresh();

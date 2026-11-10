@@ -60,12 +60,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Margin="0,0,0,17">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="{DynamicResource StudioEyebrow}" Style="{StaticResource Eyebrow}"/>
                     <TextBlock Text="{DynamicResource PhotosAndVideos}" FontSize="37" FontWeight="SemiBold" Margin="0,2,0,1"/>
-                    <TextBlock Text="{DynamicResource MainSubtitle}" Style="{StaticResource MutedText}"/>
+                    <TextBlock Text="{DynamicResource MainSubtitle}" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
-                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Button Style="{StaticResource StudioButton}" Content="{DynamicResource RestorePhoto}" Padding="14,9" Margin="0,0,8,0"
+                            Command="{Binding RestorePhotoCommand}"/>
                     <Button Style="{StaticResource StudioButton}" Content="{DynamicResource CompressPhoto}" Padding="14,9" Margin="0,0,8,0"
                             Command="{Binding CompressPhotoCommand}"/>
                     <Button Style="{StaticResource StudioButton}" Content="{DynamicResource CompareFiles}" Padding="14,9" Margin="0,0,8,0"

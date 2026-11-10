@@ -19,6 +19,10 @@ public partial class ComparisonView : UserControl
     private double split = 0.5;
     private bool pixelMode;
     private bool updatingSlider;
+    private bool choseInitialLayout;
+
+    public bool PreferWipe { get; set; }
+    public bool ShowOriginalFullWidth { get; set; }
 
     public ComparisonView()
     {
@@ -28,11 +32,6 @@ public partial class ComparisonView : UserControl
         transform.Children.Add(translation);
         OriginalImage.RenderTransform = EnhancedImage.RenderTransform = transform;
         DataContextChanged += OnComparisonChanged;
-    }
-
-    internal void ShowWipe()
-    {
-        if (WipeOption.IsEnabled) LayoutChoice.SelectedItem = WipeOption;
     }
 
     private void OnComparisonChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -74,10 +73,19 @@ public partial class ComparisonView : UserControl
             DimensionsLine.SetResourceReference(TextBlock.TextProperty, "LoadMedia");
         else
             DimensionsLine.Text = $"{comparison?.Before?.Dimensions ?? "—"}  →  {comparison?.After?.Dimensions ?? "—"}";
+        bool originalOnly = ShowOriginalFullWidth && comparison?.After is null;
+        LayoutChoice.IsEnabled = !originalOnly;
+        LayoutChoice.Visibility = originalOnly ? Visibility.Collapsed : Visibility.Visible;
         WipeOption.IsEnabled = comparison is { Before: not null, After: not null };
         WipeOption.SetResourceReference(ToolTipProperty, WipeOption.IsEnabled ? "WipeTip" : "WipeUnavailable");
+        if (WipeOption.IsEnabled && PreferWipe && !choseInitialLayout)
+        {
+            choseInitialLayout = true;
+            LayoutChoice.SelectedItem = WipeOption;
+        }
         bool wipe = WipeOption.IsEnabled && LayoutChoice.SelectedIndex == 1;
-        Grid.SetColumnSpan(OriginalPane, wipe ? 3 : 1);
+        EnhancedPane.Visibility = originalOnly ? Visibility.Collapsed : Visibility.Visible;
+        Grid.SetColumnSpan(OriginalPane, wipe || originalOnly ? 3 : 1);
         Grid.SetColumn(EnhancedPane, wipe ? 0 : 2);
         Grid.SetColumnSpan(EnhancedPane, wipe ? 3 : 1);
         ResultTag.HorizontalAlignment = wipe ? HorizontalAlignment.Right : HorizontalAlignment.Left;

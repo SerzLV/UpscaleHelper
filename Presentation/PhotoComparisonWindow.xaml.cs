@@ -8,14 +8,19 @@ public partial class PhotoComparisonWindow : Window
 {
     private readonly ComparisonViewModel comparison;
     private readonly PhotoComparisonHistory history;
+    private readonly Action<Window, string, bool> restore;
+    private readonly Action<Window, string> compress;
     private FileComparison files;
     private bool refreshingHistory;
 
-    internal PhotoComparisonWindow(ComparisonViewModel comparison, FileComparison files, PhotoComparisonHistory history)
+    internal PhotoComparisonWindow(ComparisonViewModel comparison, FileComparison files, PhotoComparisonHistory history,
+        Action<Window, string, bool> restore, Action<Window, string> compress)
     {
         this.comparison = comparison;
         this.files = files;
         this.history = history;
+        this.restore = restore;
+        this.compress = compress;
         InitializeComponent();
         DataContext = comparison;
     }
@@ -24,6 +29,16 @@ public partial class PhotoComparisonWindow : Window
 
     private void OnPickOriginal(object sender, RoutedEventArgs e) => ReplaceSide(true);
     private void OnPickEnhanced(object sender, RoutedEventArgs e) => ReplaceSide(false);
+
+    private void OnDrawEnhanced(object sender, RoutedEventArgs e) => WithResult(path => restore(this, path, true));
+    private void OnImproveEnhanced(object sender, RoutedEventArgs e) => WithResult(path => restore(this, path, false));
+    private void OnCompressEnhanced(object sender, RoutedEventArgs e) => WithResult(path => compress(this, path));
+
+    private void WithResult(Action<string> open)
+    {
+        if (File.Exists(files.Enhanced)) open(files.Enhanced);
+        else ErrorText.Text = T("MissingResult");
+    }
 
     private void ReplaceSide(bool original)
     {

@@ -2,64 +2,133 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p="clr-namespace:UpscaleHelper.Presentation"
-        Title="{DynamicResource RestorePhoto}" Width="1120" Height="710" MinWidth="660" MinHeight="490"
+        Title="{DynamicResource RestorePhoto}" Width="1140" Height="790" MinWidth="680" MinHeight="550"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="{StaticResource CanvasBrush}"
-        Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13"
+        Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13" UseLayoutRounding="True"
         Loaded="OnLoaded" Closing="OnClosing" Closed="OnClosed">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-            <TextBlock Text="{DynamicResource RestorePhoto}" FontSize="22" FontWeight="SemiBold"/>
-            <TextBlock x:Name="SourceLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
-            <Expander x:Name="AdvancedOptions" Header="{DynamicResource RestorationAdvanced}" Foreground="{StaticResource TextBrush}"
-                      Margin="0,9,0,0">
-              <WrapPanel x:Name="Options" Margin="0,7,0,0">
-                <StackPanel Margin="0,0,12,6">
-                    <TextBlock Text="{DynamicResource RestorationMode}" Style="{StaticResource Eyebrow}" Margin="0,0,0,4"/>
-                    <ComboBox x:Name="ModeBox" Width="176" MinHeight="32" SelectedIndex="0" SelectionChanged="OnOptionsChanged"
-                              AutomationProperties.Name="{DynamicResource RestorationMode}">
-                        <ComboBoxItem Content="{DynamicResource RestorationAutomatic}"/>
-                        <ComboBoxItem Content="{DynamicResource RestorationFocus}"/>
-                        <ComboBoxItem Content="{DynamicResource RestorationMotion}"/>
-                        <ComboBoxItem Content="{DynamicResource RestorationNoise}"/>
-                    </ComboBox>
+    <Window.Resources>
+        <Geometry x:Key="Sparkle">M10,1 L12.3,7.7 19,10 12.3,12.3 10,19 7.7,12.3 1,10 7.7,7.7 Z</Geometry>
+        <Style x:Key="MethodCard" TargetType="ListBoxItem" BasedOn="{StaticResource ChoiceRow}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="MinHeight" Value="58"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource CanvasBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="20,16,20,10">
+            <DockPanel Margin="0,0,0,12">
+                <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="11" Background="#302653"
+                        BorderBrush="#564580" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Center">
+                    <Path Data="{StaticResource Sparkle}" Fill="{StaticResource AccentBrush}" Width="19" Height="19"
+                          Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{DynamicResource RestorePhoto}" Style="{StaticResource DialogHeading}"/>
+                    <TextBlock x:Name="SourceLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                 </StackPanel>
-                <StackPanel Margin="0,0,12,6">
-                    <TextBlock Text="{DynamicResource RestorationStrength}" Style="{StaticResource Eyebrow}" Margin="0,0,0,4"/>
-                    <ComboBox x:Name="StrengthBox" Width="146" MinHeight="32" SelectedIndex="1" SelectionChanged="OnOptionsChanged"
-                              AutomationProperties.Name="{DynamicResource RestorationStrength}">
-                        <ComboBoxItem Content="{DynamicResource RestorationGentle}"/>
-                        <ComboBoxItem Content="{DynamicResource RestorationBalanced}"/>
-                        <ComboBoxItem Content="{DynamicResource RestorationStrong}"/>
-                    </ComboBox>
-                </StackPanel>
-                <StackPanel Margin="0,0,12,6">
-                    <TextBlock Text="{DynamicResource ScaleHeading}" Style="{StaticResource Eyebrow}" Margin="0,0,0,4"/>
-                    <ComboBox x:Name="ScaleBox" Width="125" MinHeight="32" SelectedIndex="0" SelectionChanged="OnOptionsChanged"
-                              AutomationProperties.Name="{DynamicResource ScaleHeading}">
-                        <ComboBoxItem Content="{DynamicResource RestorationOriginalSize}"/>
-                        <ComboBoxItem Content="2×"/>
-                    </ComboBox>
-                </StackPanel>
-              </WrapPanel>
-            </Expander>
-            <TextBlock x:Name="StatusText" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,3,0,0"
-                       AutomationProperties.LiveSetting="Polite"/>
-            <ProgressBar x:Name="Progress" Visibility="Collapsed" Height="4" Margin="0,6,0,0"
-                         Foreground="{StaticResource PrimaryBrush}" AutomationProperties.Name="{DynamicResource RestoringPhoto}"/>
+            </DockPanel>
+            <ListBox x:Name="MethodChoice" Style="{StaticResource ChoiceList}" ItemContainerStyle="{StaticResource MethodCard}"
+                     SelectedIndex="0" SelectionChanged="OnMethodChanged" AutomationProperties.Name="{DynamicResource RestorationMode}">
+                <ListBoxItem AutomationProperties.Name="{DynamicResource RestorationNatural}">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource RestorationNatural}"/>
+                        <TextBlock Text="{DynamicResource RestorationNaturalHint}" Style="{StaticResource MutedText}" FontWeight="Normal"
+                                   TextWrapping="Wrap" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Margin="3,0,0,0" AutomationProperties.Name="{DynamicResource DrawDetails}"
+                             AutomationProperties.HelpText="{DynamicResource DrawDetailsTip}" ToolTip="{DynamicResource DrawDetailsTip}">
+                    <StackPanel>
+                        <DockPanel>
+                            <Border DockPanel.Dock="Right" VerticalAlignment="Center" Background="#3C3055"
+                                    CornerRadius="5" Padding="6,1" Margin="6,0,0,0">
+                                <TextBlock Text="{DynamicResource RestorationExperimental}" Foreground="{StaticResource AccentBrush}" FontSize="11"/>
+                            </Border>
+                            <TextBlock Text="{DynamicResource DrawDetails}" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <TextBlock Text="{DynamicResource RestorationDrawHint}" Style="{StaticResource MutedText}" FontWeight="Normal"
+                                   TextWrapping="Wrap" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,11,0,0">
-            <Button x:Name="CancelButton" Content="{DynamicResource CancelProcessing}" Visibility="Collapsed" Click="OnCancel"
-                    Style="{StaticResource StudioButton}" Margin="0,0,8,0"/>
-            <Button x:Name="PreviewButton" Content="{DynamicResource RestorationStart}" Click="OnPreview"
-                    Style="{StaticResource StudioButton}" Margin="0,0,8,0" IsDefault="True"/>
-            <Button x:Name="DrawButton" Content="{DynamicResource DrawDetails}" Click="OnDrawDetails"
-                    ToolTip="{DynamicResource DrawDetailsTip}" Style="{StaticResource StudioButton}" Margin="0,0,8,0"/>
-            <Button Content="{DynamicResource Close}" IsCancel="True" Style="{StaticResource StudioButton}" Margin="0,0,8,0"/>
-            <Button x:Name="SaveButton" Content="{DynamicResource RestorationSave}" Style="{StaticResource PrimaryButton}"
-                    IsEnabled="False" Click="OnSave"/>
-        </StackPanel>
-        <Border Style="{StaticResource Card}" Padding="14">
-            <p:ComparisonView x:Name="ComparisonPanel"/>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="20,0,20,12" Padding="13">
+            <p:ComparisonView ShowOriginalFullWidth="True" PreferWipe="True"/>
         </Border>
-    </DockPanel>
+
+        <Border Grid.Row="2" Style="{StaticResource DialogFooter}">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,9">
+                    <Ellipse DockPanel.Dock="Left" Width="6" Height="6" VerticalAlignment="Top" Margin="0,6,8,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="{StaticResource AccentBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEnabled, ElementName=SaveButton}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource MintBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <ScrollViewer MaxHeight="48" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <TextBlock x:Name="StatusText" Style="{StaticResource MutedText}" TextWrapping="Wrap"
+                                   AutomationProperties.LiveSetting="Polite"/>
+                    </ScrollViewer>
+                </DockPanel>
+                <ProgressBar x:Name="Progress" Visibility="Collapsed" Height="4" Margin="0,0,0,9"
+                             Foreground="{StaticResource PrimaryBrush}" AutomationProperties.Name="{DynamicResource RestoringPhoto}"/>
+                <Grid>
+                    <Expander x:Name="AdvancedOptions" Style="{StaticResource CanvasExpander}" Header="{DynamicResource RestorationAdvanced}"
+                              Foreground="{StaticResource TextBrush}" Margin="0,2,0,0">
+                        <WrapPanel Margin="0,8,0,0">
+                            <StackPanel x:Name="CorrectionOption" Width="185" Margin="0,0,12,0">
+                                <TextBlock Text="{DynamicResource RestorationCorrection}" Style="{StaticResource MutedText}" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="ModeBox" MinHeight="32" SelectedIndex="0" SelectionChanged="OnOptionsChanged"
+                                          AutomationProperties.Name="{DynamicResource RestorationCorrection}">
+                                    <ComboBoxItem Content="{DynamicResource RestorationAutomatic}"/>
+                                    <ComboBoxItem Content="{DynamicResource RestorationFocus}"/>
+                                    <ComboBoxItem Content="{DynamicResource RestorationMotion}"/>
+                                    <ComboBoxItem Content="{DynamicResource RestorationNoise}"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Width="146" Margin="0,0,12,0">
+                                <TextBlock Text="{DynamicResource RestorationStrength}" Style="{StaticResource MutedText}" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="StrengthBox" MinHeight="32" SelectedIndex="1" SelectionChanged="OnOptionsChanged"
+                                          AutomationProperties.Name="{DynamicResource RestorationStrength}">
+                                    <ComboBoxItem Content="{DynamicResource RestorationGentle}"/>
+                                    <ComboBoxItem Content="{DynamicResource RestorationBalanced}"/>
+                                    <ComboBoxItem Content="{DynamicResource RestorationStrong}"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Width="162">
+                                <TextBlock Text="{DynamicResource RestorationOutputSize}" Style="{StaticResource MutedText}" Margin="0,0,0,4"/>
+                                <ComboBox x:Name="ScaleBox" MinHeight="32" SelectedIndex="0" SelectionChanged="OnOptionsChanged"
+                                          AutomationProperties.Name="{DynamicResource RestorationOutputSize}">
+                                    <ComboBoxItem Content="{DynamicResource RestorationOriginalSize}"/>
+                                    <ComboBoxItem Content="2×"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </WrapPanel>
+                    </Expander>
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                        <Button Content="{DynamicResource Close}" IsCancel="True" Style="{StaticResource DialogButton}" Margin="0,0,8,0"/>
+                        <Button x:Name="CancelButton" Content="{DynamicResource CancelProcessing}" Visibility="Collapsed" Click="OnCancel"
+                                Style="{StaticResource DialogButton}"/>
+                        <Button x:Name="PreviewButton" Content="{DynamicResource RestorationStart}" Click="OnPreview"
+                                Style="{StaticResource DialogPrimary}" IsDefault="True"/>
+                        <Button x:Name="SaveButton" Content="{DynamicResource RestorationSave}" Style="{StaticResource DialogPrimary}"
+                                IsEnabled="False" Visibility="Collapsed" Click="OnSave"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>

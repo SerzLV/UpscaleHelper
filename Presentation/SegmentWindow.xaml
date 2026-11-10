@@ -4,30 +4,34 @@
         Title="{DynamicResource PreviewClip}" Width="440" SizeToContent="Height" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="{StaticResource CanvasBrush}"
         Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13" FocusManager.FocusedElement="{Binding ElementName=StartBox}">
-    <StackPanel Margin="22">
-        <TextBlock Text="{DynamicResource PreviewClip}" FontSize="23" FontWeight="SemiBold"/>
-        <TextBlock x:Name="FileLabel" TextTrimming="CharacterEllipsis" Style="{StaticResource MutedText}" Margin="0,4,0,17"/>
-        <Grid>
-            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
-            <StackPanel>
-                <TextBlock Text="{DynamicResource Start}" Margin="0,0,0,5"/>
-                <TextBox x:Name="StartBox" Padding="8,5" MinHeight="34" MaxLength="12"
-                         AutomationProperties.Name="{DynamicResource ClipStart}"/>
-            </StackPanel>
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="{DynamicResource Duration}" Margin="0,0,0,5"/>
-                <ComboBox x:Name="LengthBox" MinHeight="34" SelectedIndex="0" AutomationProperties.Name="{DynamicResource ClipDuration}">
-                    <ComboBoxItem Content="{DynamicResource FiveSeconds}"/>
-                    <ComboBoxItem Content="{DynamicResource TenSeconds}"/>
-                </ComboBox>
-            </StackPanel>
-        </Grid>
-        <TextBlock Text="{DynamicResource SegmentHelp}"
-                   Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,10,0,0"/>
-        <TextBlock x:Name="ErrorText" Foreground="#FF9DAB" TextWrapping="Wrap" Margin="0,4,0,0"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,13,0,0">
-            <Button Content="{DynamicResource Cancel}" IsCancel="True" Style="{StaticResource StudioButton}" Margin="0,0,8,0"/>
-            <Button Content="{DynamicResource Prepare}" IsDefault="True" Style="{StaticResource PrimaryButton}" MinHeight="36" Click="OnAccept"/>
+    <DockPanel Background="{StaticResource CanvasBrush}">
+        <StackPanel DockPanel.Dock="Top" Margin="20,16,20,10">
+            <TextBlock Text="{DynamicResource PreviewClip}" Style="{StaticResource DialogHeading}"/>
+            <TextBlock x:Name="FileLabel" TextTrimming="CharacterEllipsis" Style="{StaticResource MutedText}" Margin="0,4,0,17"/>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Start}" Style="{StaticResource FieldLabel}"/>
+                    <TextBox x:Name="StartBox" Padding="8,5" MinHeight="34" MaxLength="12"
+                             AutomationProperties.Name="{DynamicResource ClipStart}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="{DynamicResource Duration}" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox x:Name="LengthBox" MinHeight="34" SelectedIndex="0" AutomationProperties.Name="{DynamicResource ClipDuration}">
+                        <ComboBoxItem Content="{DynamicResource FiveSeconds}"/>
+                        <ComboBoxItem Content="{DynamicResource TenSeconds}"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+            <TextBlock Text="{DynamicResource SegmentHelp}"
+                       Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,10,0,0"/>
+            <TextBlock x:Name="ErrorText" Foreground="#FF9DAB" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" Margin="0,4,0,0"/>
         </StackPanel>
-    </StackPanel>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{DynamicResource Cancel}" IsCancel="True" Style="{StaticResource DialogButton}" Margin="0,0,8,0"/>
+                <Button Content="{DynamicResource Prepare}" IsDefault="True" Style="{StaticResource DialogPrimary}" Click="OnAccept"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </Window>

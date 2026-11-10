@@ -4,15 +4,17 @@
         Title="{DynamicResource ProcessingError}" Width="590" Height="335" MinWidth="420" MinHeight="250"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="{StaticResource CanvasBrush}"
         Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-            <TextBlock Text="{DynamicResource ProcessingError}" FontSize="22" FontWeight="SemiBold"/>
+    <DockPanel Background="{StaticResource CanvasBrush}">
+        <StackPanel DockPanel.Dock="Top" Margin="20,16,20,12">
+            <TextBlock Text="{DynamicResource ProcessingError}" Style="{StaticResource DialogHeading}"/>
             <TextBlock x:Name="FileLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
         </StackPanel>
-        <Button DockPanel.Dock="Bottom" Content="{DynamicResource Close}" Style="{StaticResource StudioButton}"
-                IsCancel="True" HorizontalAlignment="Right" Margin="0,12,0,0"/>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
+            <Button Content="{DynamicResource Close}" Style="{StaticResource DialogButton}"
+                    IsCancel="True" HorizontalAlignment="Right"/>
+        </Border>
         <TextBox x:Name="ErrorText" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                 Background="{StaticResource InsetBrush}" Foreground="{StaticResource TextBrush}" Padding="10"
+                 Background="{StaticResource InsetBrush}" Foreground="{StaticResource TextBrush}" Padding="10" Margin="20,0,20,12"
                  AutomationProperties.Name="{DynamicResource ErrorDetails}"/>
     </DockPanel>
 </Window>

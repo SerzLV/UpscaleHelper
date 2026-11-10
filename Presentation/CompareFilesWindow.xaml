@@ -4,54 +4,58 @@
         Title="{DynamicResource CompareFiles}" Width="570" SizeToContent="Height" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="{StaticResource CanvasBrush}"
         Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13">
-    <StackPanel Margin="22">
-        <TextBlock Text="{DynamicResource CompareReadyFiles}" FontSize="24" FontWeight="SemiBold"/>
-        <TextBlock Text="{DynamicResource ChoosePair}" Style="{StaticResource MutedText}" Margin="0,4,0,17"/>
-        <StackPanel x:Name="HistoryPanel" Margin="0,0,0,12">
-            <TextBlock Text="{DynamicResource RecentPhotoComparisons}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
-            <ComboBox x:Name="RecentPairs" DisplayMemberPath="Caption" MinHeight="34" SelectionChanged="OnRecentSelected"
-                      AutomationProperties.Name="{DynamicResource RecentPhotoComparisons}"/>
+    <DockPanel Background="{StaticResource CanvasBrush}">
+        <StackPanel DockPanel.Dock="Top" Margin="20,16,20,10">
+            <TextBlock Text="{DynamicResource CompareReadyFiles}" Style="{StaticResource DialogHeading}"/>
+            <TextBlock Text="{DynamicResource ChoosePair}" Style="{StaticResource MutedText}" Margin="0,4,0,17"/>
+            <StackPanel x:Name="HistoryPanel" Margin="0,0,0,12">
+                <TextBlock Text="{DynamicResource RecentPhotoComparisons}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <ComboBox x:Name="RecentPairs" DisplayMemberPath="Caption" MinHeight="34" SelectionChanged="OnRecentSelected"
+                          AutomationProperties.Name="{DynamicResource RecentPhotoComparisons}"/>
+            </StackPanel>
+            <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+            <DockPanel Margin="0,0,0,12">
+                <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
+                        AutomationProperties.Name="{DynamicResource ChooseOriginal}" Margin="8,0,0,0"/>
+                <Border Style="{StaticResource Card}" Padding="10,7" CornerRadius="8">
+                    <TextBlock x:Name="OriginalLabel" Text="{DynamicResource NoFileSelected}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </Border>
+            </DockPanel>
+            <TextBlock Text="{DynamicResource EnhancedTag}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickEnhanced"
+                        AutomationProperties.Name="{DynamicResource ChooseEnhanced}" Margin="8,0,0,0"/>
+                <Border Style="{StaticResource Card}" Padding="10,7" CornerRadius="8">
+                    <TextBlock x:Name="EnhancedLabel" Text="{DynamicResource NoFileSelected}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </Border>
+            </DockPanel>
+            <StackPanel x:Name="VideoOptions" Visibility="Collapsed" Margin="0,15,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Duration}" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox x:Name="LengthBox" MinHeight="34" SelectedIndex="0" SelectionChanged="OnLengthChanged"
+                                  AutomationProperties.Name="{DynamicResource ComparisonDuration}">
+                            <ComboBoxItem Content="{DynamicResource WholeVideo}"/><ComboBoxItem Content="{DynamicResource FiveSeconds}"/><ComboBoxItem Content="{DynamicResource TenSeconds}"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="{DynamicResource ClipStart}" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="StartBox" Text="0:00" MaxLength="12" MinHeight="34" Padding="8,5"
+                                 IsEnabled="False" AutomationProperties.Name="{DynamicResource ClipStart}"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Text="{DynamicResource ShorterVideo}"
+                           TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
+            </StackPanel>
+            <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Foreground="#FF9DAB" AutomationProperties.LiveSetting="Polite" Margin="0,7,0,0"/>
         </StackPanel>
-        <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
-        <DockPanel Margin="0,0,0,12">
-            <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
-                    AutomationProperties.Name="{DynamicResource ChooseOriginal}" Margin="8,0,0,0"/>
-            <Border Style="{StaticResource Card}" Padding="10,7" CornerRadius="8">
-                <TextBlock x:Name="OriginalLabel" Text="{DynamicResource NoFileSelected}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-            </Border>
-        </DockPanel>
-        <TextBlock Text="{DynamicResource EnhancedTag}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
-        <DockPanel>
-            <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickEnhanced"
-                    AutomationProperties.Name="{DynamicResource ChooseEnhanced}" Margin="8,0,0,0"/>
-            <Border Style="{StaticResource Card}" Padding="10,7" CornerRadius="8">
-                <TextBlock x:Name="EnhancedLabel" Text="{DynamicResource NoFileSelected}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-            </Border>
-        </DockPanel>
-        <StackPanel x:Name="VideoOptions" Visibility="Collapsed" Margin="0,15,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Duration}" Margin="0,0,0,5"/>
-                    <ComboBox x:Name="LengthBox" MinHeight="34" SelectedIndex="0" SelectionChanged="OnLengthChanged"
-                              AutomationProperties.Name="{DynamicResource ComparisonDuration}">
-                        <ComboBoxItem Content="{DynamicResource WholeVideo}"/><ComboBoxItem Content="{DynamicResource FiveSeconds}"/><ComboBoxItem Content="{DynamicResource TenSeconds}"/>
-                    </ComboBox>
-                </StackPanel>
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="{DynamicResource ClipStart}" Margin="0,0,0,5"/>
-                    <TextBox x:Name="StartBox" Text="0:00" MaxLength="12" MinHeight="34" Padding="8,5"
-                             IsEnabled="False" AutomationProperties.Name="{DynamicResource ClipStart}"/>
-                </StackPanel>
-            </Grid>
-            <TextBlock Text="{DynamicResource ShorterVideo}"
-                       TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
-        </StackPanel>
-        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Foreground="#FF9DAB" Margin="0,7,0,0"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="{DynamicResource Cancel}" IsCancel="True" Style="{StaticResource StudioButton}" Margin="0,0,8,0"/>
-            <Button x:Name="CompareButton" Content="{DynamicResource OpenComparison}" Style="{StaticResource PrimaryButton}"
-                    IsEnabled="False" IsDefault="True" MinHeight="36" Click="OnAccept"/>
-        </StackPanel>
-    </StackPanel>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{DynamicResource Cancel}" IsCancel="True" Style="{StaticResource DialogButton}" Margin="0,0,8,0"/>
+                <Button x:Name="CompareButton" Content="{DynamicResource OpenComparison}" Style="{StaticResource DialogPrimary}"
+                        IsEnabled="False" IsDefault="True" Click="OnAccept"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </Window>

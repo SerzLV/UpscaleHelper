@@ -23,9 +23,15 @@ public partial class MainWindow : Window
 
     private void OnStudioChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(StudioViewModel.ActiveItem) && studio.ActiveItem is { } item)
-            QueueList.ScrollIntoView(item);
+        var item = e.PropertyName switch
+        {
+            nameof(StudioViewModel.ActiveItem) => studio.ActiveItem,
+            nameof(StudioViewModel.Selected) => studio.Selected,
+            _ => null
+        };
+        if (item is not null) QueueList.ScrollIntoView(item);
     }
+
     private void OnDragOver(object sender, DragEventArgs e)
     {
         e.Effects = studio.CanEdit && e.Data.GetDataPresent(DataFormats.FileDrop)

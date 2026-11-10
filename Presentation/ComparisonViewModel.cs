@@ -31,6 +31,12 @@ internal sealed class ComparisonViewModel(IPreviewProvider? previews = null) : O
 
     public void Cancel() => previewLoad?.Cancel();
 
+    public void ClearResult()
+    {
+        After = null;
+        Set(ref afterHint, "ResultPlaceholder", nameof(AfterHint));
+    }
+
     public void ShowFrames(PreviewImage original, PreviewImage enhanced)
     {
         Before = original;

@@ -17,7 +17,7 @@ public partial class PhotoCompressionWindow : Window
     private readonly IPhotoCompressor compressor;
     private readonly ComparisonViewModel comparison;
     private readonly PhotoComparisonHistory history;
-    private readonly CancellationTokenSource cancellation = new();
+    private CancellationTokenSource? cancellation;
     private TemporaryFolder? temporary;
     private Task? job;
     private string? preview;
@@ -44,7 +44,8 @@ public partial class PhotoCompressionWindow : Window
         QualityOptions.Visibility = ModeBox.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
         if (preview is null) return;
         preview = null;
-        SaveButton.IsEnabled = false;
+        comparison.ClearResult();
+        UpdateActions(busy: false);
         StatusText.Text = T("CompressionRegenerate");
     }
 
@@ -70,6 +71,7 @@ public partial class PhotoCompressionWindow : Window
 
     private async void OnPreview(object sender, RoutedEventArgs e)
     {
+        if (job is not null || closing) return;
         bool lossless = ModeBox.SelectedIndex == 0;
         int quality = DefaultQuality;
         if (!lossless && (!ReadQuality(out quality) || quality is < MinimumQuality or > MaximumQuality))
@@ -103,7 +105,7 @@ public partial class PhotoCompressionWindow : Window
 
     private async void OnSave(object sender, RoutedEventArgs e)
     {
-        if (preview is not { } staged || closing) return;
+        if (preview is not { } staged || job is not null || closing) return;
         var dialog = new SaveFileDialog
         {
             Title = T("CompressionSave"), Filter = "WebP (*.webp)|*.webp", DefaultExt = ".webp", OverwritePrompt = false,
@@ -138,21 +140,43 @@ public partial class PhotoCompressionWindow : Window
 
     private async Task RunAsync(string status, Func<CancellationToken, Task> operation)
     {
-        Options.IsEnabled = false;
-        SaveButton.IsEnabled = false;
+        using var request = new CancellationTokenSource();
+        cancellation = request;
+        UpdateActions(busy: true);
+        CancelButton.IsEnabled = true;
         StatusText.Text = T(status);
         job = RunOperationAsync();
         await job;
         job = null;
-        Options.IsEnabled = !closing;
-        SaveButton.IsEnabled = !closing && preview is not null;
+        cancellation = null;
+        if (preview is null) comparison.ClearResult();
+        UpdateActions(busy: false);
 
         async Task RunOperationAsync()
         {
-            try { await operation(cancellation.Token); }
-            catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
+            try { await operation(request.Token); }
+            catch (OperationCanceledException) when (request.IsCancellationRequested) { StatusText.Text = T("Canceled"); }
             catch (Exception ex) { StatusText.Text = T("CompressionError", ex.Message); }
         }
+    }
+
+    private void UpdateActions(bool busy)
+    {
+        Options.IsEnabled = !busy && !closing;
+        SaveButton.IsEnabled = !busy && !closing && preview is not null;
+        SaveButton.IsDefault = SaveButton.IsEnabled;
+        SaveButton.Visibility = SaveButton.IsEnabled ? Visibility.Visible : Visibility.Collapsed;
+        PreviewButton.Visibility = !busy && !closing && preview is null ? Visibility.Visible : Visibility.Collapsed;
+        CancelButton.Visibility = Progress.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnCancel(object sender, RoutedEventArgs e) => Cancel();
+
+    private void Cancel()
+    {
+        CancelButton.IsEnabled = false;
+        cancellation?.Cancel();
+        comparison.Cancel();
     }
 
     private async void OnClosing(object? sender, CancelEventArgs e)
@@ -161,8 +185,7 @@ public partial class PhotoCompressionWindow : Window
         e.Cancel = true;
         if (closing) return;
         closing = true;
-        cancellation.Cancel();
-        comparison.Cancel();
+        Cancel();
         await active;
         Close();
     }
@@ -170,7 +193,6 @@ public partial class PhotoCompressionWindow : Window
     private void OnClosed(object? sender, EventArgs e)
     {
         comparison.Cancel();
-        cancellation.Dispose();
         temporary?.Dispose();
     }
 }

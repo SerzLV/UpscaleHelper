@@ -8,6 +8,44 @@ namespace UpscaleHelper.Tests;
 public class StudioViewModelTests
 {
     [Fact]
+    public void PhotoToolsUseTheFinishedPhotoAndOpenTheRequestedMode()
+    {
+        using var work = new TestDirectory();
+        string source = Path.Combine(work.Path, "photo.jpg");
+        string result = Path.Combine(work.Path, "photo_x2.png");
+        string video = Path.Combine(work.Path, "clip.mp4");
+        foreach (string path in new[] { source, result, video }) File.WriteAllText(path, "placeholder");
+        var dialogs = new TestDialogs();
+        var studio = new StudioViewModel(new FakeProcessor(), new EmptyPreview(), new UnusedVideoPreview(),
+            dialogs, new TestLanguage(), new MemorySettings(new()), new(work.Path, "queue.json"));
+        studio.AddFiles([source, video]);
+        var photo = studio.Items[0];
+        studio.CompressPhotoCommand.Execute(photo);
+        Assert.Equal(source, dialogs.CompressionSource);
+
+        photo.Output = result;
+        photo.State = JobState.Completed;
+        studio.CompressPhotoCommand.Execute(photo);
+        studio.RestorePhotoCommand.Execute(photo);
+        Assert.Equal(result, dialogs.CompressionSource);
+        Assert.Equal((result, false), dialogs.Restoration);
+        studio.DrawDetailsCommand.Execute(photo);
+        Assert.Equal((result, true), dialogs.Restoration);
+        studio.CompareFilesCommand.Execute(photo);
+        Assert.Equal(new FileComparison(source, result, MediaKind.Image, null), dialogs.Comparison);
+
+        var videoItem = studio.Items[1];
+        Assert.False(studio.DrawDetailsCommand.CanExecute(videoItem));
+        studio.RemoveCommand.Execute(videoItem);
+        Assert.Same(photo, studio.Selected);
+        Assert.Single(studio.Items);
+        Assert.True(File.Exists(video));
+
+        studio.DrawDetailsCommand.Execute(null);
+        Assert.Equal(((string?)null, true), dialogs.Restoration);
+    }
+
+    [Fact]
     public async Task RestoresPreferencesAndCompletesAQueuedVideoWithCurrentSettings()
     {
         using var work = new TestDirectory();
@@ -111,6 +149,8 @@ public class StudioViewModelTests
     private sealed class TestDialogs : IStudioDialogs
     {
         public FileComparison? Comparison { get; private set; }
+        public string? CompressionSource { get; private set; }
+        public (string? Source, bool DrawDetails) Restoration { get; private set; }
         public string[] PickFiles() => [];
         public string? PickFolder(string? current) => null;
         public VideoSegment? PickSegment(string name, VideoSegment? previous) => null;
@@ -119,9 +159,9 @@ public class StudioViewModelTests
             Comparison = initial;
             return null;
         }
-        public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) => throw new NotSupportedException();
-        public void ShowPhotoCompression(string? source) => throw new NotSupportedException();
-        public void ShowPhotoRestoration() => throw new NotSupportedException();
+        public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) => Comparison = files;
+        public void ShowPhotoCompression(string? source) => CompressionSource = source;
+        public void ShowPhotoRestoration(string? source, bool drawDetails) => Restoration = (source, drawDetails);
         public void ShowComparison(ComparisonClip clip, string name) => throw new NotSupportedException();
         public void ShowError(string name, string error) => throw new NotSupportedException();
         public void Reveal(string path) => throw new NotSupportedException();

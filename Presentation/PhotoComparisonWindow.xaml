@@ -2,30 +2,34 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p="clr-namespace:UpscaleHelper.Presentation"
-        Title="{DynamicResource PhotoComparison}" Width="1120" Height="665" MinWidth="600" MinHeight="390"
+        Title="{DynamicResource PhotoComparison}" Width="1140" Height="750" MinWidth="600" MinHeight="510"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="{StaticResource CanvasBrush}"
         Language="{DynamicResource UiLanguage}" FontFamily="Segoe UI" FontSize="13" Loaded="OnLoaded" Closed="OnClosed">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-            <TextBlock Text="{DynamicResource ReadyPhotoComparison}" FontSize="22" FontWeight="SemiBold"/>
+    <DockPanel Background="{StaticResource CanvasBrush}">
+        <StackPanel DockPanel.Dock="Top" Margin="20,16,20,12">
+            <TextBlock Text="{DynamicResource ReadyPhotoComparison}" Style="{StaticResource DialogHeading}"/>
             <Grid Margin="0,8,0,0">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <DockPanel>
-                    <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
-                            Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseOriginal}"/>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}"/>
-                        <TextBlock x:Name="OriginalLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
-                    </StackPanel>
-                </DockPanel>
-                <DockPanel Grid.Column="2">
-                    <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickEnhanced"
-                            Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseEnhanced}"/>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{DynamicResource ResultTag}" Style="{StaticResource Eyebrow}"/>
-                        <TextBlock x:Name="EnhancedLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
-                    </StackPanel>
-                </DockPanel>
+                <Border Style="{StaticResource Card}" CornerRadius="9" Padding="10,7">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="{DynamicResource ReplacePhoto}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
+                                Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseOriginal}"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}"/>
+                            <TextBlock x:Name="OriginalLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}" CornerRadius="9" Padding="10,7">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="{DynamicResource ReplacePhoto}" Style="{StaticResource StudioButton}" Click="OnPickEnhanced"
+                                Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseEnhanced}"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{DynamicResource ResultTag}" Style="{StaticResource Eyebrow}"/>
+                            <TextBlock x:Name="EnhancedLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
             </Grid>
             <DockPanel Margin="0,8,0,0">
                 <TextBlock DockPanel.Dock="Left" Text="{DynamicResource RecentPhotoComparisons}" Style="{StaticResource MutedText}"
@@ -33,12 +37,21 @@
                 <ComboBox x:Name="RecentPairs" DisplayMemberPath="Caption" MinHeight="30" SelectionChanged="OnRecentSelected"
                           AutomationProperties.Name="{DynamicResource RecentPhotoComparisons}"/>
             </DockPanel>
-            <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Foreground="#FF9DAB"/>
+            <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Foreground="#FF9DAB" AutomationProperties.LiveSetting="Polite"/>
         </StackPanel>
-        <Button DockPanel.Dock="Bottom" Content="{DynamicResource Close}" IsCancel="True" HorizontalAlignment="Right"
-                Style="{StaticResource StudioButton}" Margin="0,11,0,0"/>
-        <Border Style="{StaticResource Card}" Padding="14">
-            <p:ComparisonView/>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="{DynamicResource Close}" IsCancel="True" Style="{StaticResource DialogButton}"/>
+                <WrapPanel>
+                    <TextBlock Text="{DynamicResource UseResult}" Style="{StaticResource MutedText}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Button Content="{DynamicResource PhotoImproveShort}" Style="{StaticResource DialogButton}" Click="OnImproveEnhanced" Margin="0,0,6,0"/>
+                    <Button Content="{DynamicResource PhotoDrawShort}" Style="{StaticResource DialogButton}" Click="OnDrawEnhanced" Margin="0,0,6,0"/>
+                    <Button Content="{DynamicResource CompressPhotoShort}" Style="{StaticResource DialogButton}" Click="OnCompressEnhanced"/>
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Padding="13" Margin="20,0,20,12">
+            <p:ComparisonView PreferWipe="True"/>
         </Border>
     </DockPanel>
 </Window>

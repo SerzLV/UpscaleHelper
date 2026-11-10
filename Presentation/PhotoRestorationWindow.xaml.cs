@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 using UpscaleHelper.Processing;
 
@@ -16,10 +17,11 @@ public partial class PhotoRestorationWindow : Window
     private Task? job;
     private string? preview;
     private bool closing;
-    private bool firstPreview = true;
     private bool drewDetails;
+    private bool DrawsDetails => MethodChoice.SelectedIndex == 1;
 
-    internal PhotoRestorationWindow(string source, IPhotoRestorer restorer, IPreviewProvider previews, PhotoComparisonHistory history)
+    internal PhotoRestorationWindow(string source, IPhotoRestorer restorer, IPreviewProvider previews, PhotoComparisonHistory history,
+        bool drawDetails = false)
     {
         this.source = source;
         this.restorer = restorer;
@@ -29,26 +31,46 @@ public partial class PhotoRestorationWindow : Window
         DataContext = comparison;
         SourceLabel.Text = Path.GetFileName(source);
         SourceLabel.ToolTip = source;
+        if (drawDetails) MethodChoice.SelectedIndex = 1;
+        UpdateMethod();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnLoaded;
-        StatusText.Text = T(restorer.IsInstalled ? "RestorationStartHint" : "RestorationSetupNeeded");
+        StatusText.Text = T(PreviewHint());
         _ = comparison.LoadAsync(source, null);
     }
+
+    private void OnMethodChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PreviewButton is null || e.OriginalSource != MethodChoice) return;
+        UpdateMethod();
+        if (preview is not null) OnOptionsChanged(sender, e);
+        else StatusText.Text = T(PreviewHint());
+    }
+
+    private void UpdateMethod()
+    {
+        PreviewButton.SetResourceReference(ContentControl.ContentProperty, DrawsDetails ? "DrawDetails" : "RestorationStart");
+        CorrectionOption.Visibility = DrawsDetails ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private string PreviewHint() => !restorer.IsInstalled ? "RestorationSetupNeeded" :
+        DrawsDetails && !restorer.IsDrawDetailsInstalled ? "DrawDetailsSetupNeeded" : "RestorationStartHint";
 
     private void OnOptionsChanged(object sender, RoutedEventArgs e)
     {
         if (preview is null) return;
         preview = null;
-        SaveButton.IsEnabled = false;
-        PreviewButton.Visibility = Visibility.Visible;
-        StatusText.Text = T("CompressionRegenerate");
+        comparison.ClearResult();
+        UpdateActions(busy: false);
+        string hint = PreviewHint();
+        StatusText.Text = T(hint == "RestorationStartHint" ? "CompressionRegenerate" : hint);
     }
 
-    private async void OnPreview(object sender, RoutedEventArgs e) => await CreatePreviewAsync((RestorationMode)ModeBox.SelectedIndex);
-    private async void OnDrawDetails(object sender, RoutedEventArgs e) => await CreatePreviewAsync(RestorationMode.DrawDetails);
+    private async void OnPreview(object sender, RoutedEventArgs e) =>
+        await CreatePreviewAsync(DrawsDetails ? RestorationMode.DrawDetails : (RestorationMode)ModeBox.SelectedIndex);
 
     private async Task CreatePreviewAsync(RestorationMode mode)
     {
@@ -56,7 +78,6 @@ public partial class PhotoRestorationWindow : Window
         if (!restorer.IsInstalled)
         {
             StatusText.Text = T("RestorationSetupNeeded");
-            PreviewButton.Visibility = Visibility.Visible;
             return;
         }
         bool drawing = mode == RestorationMode.DrawDetails;
@@ -90,18 +111,13 @@ public partial class PhotoRestorationWindow : Window
             if (comparison.After is null) throw new InvalidDataException(T("NoImageInFile"));
             preview = staged;
             drewDetails = drawing;
-            if (firstPreview)
-            {
-                ComparisonPanel.ShowWipe();
-                firstPreview = false;
-            }
             StatusText.Text = T(drawing ? "DrawDetailsReady" : "RestorationReady");
         });
     }
 
     private async void OnSave(object sender, RoutedEventArgs e)
     {
-        if (preview is not { } staged || closing) return;
+        if (preview is not { } staged || job is not null || closing) return;
         var dialog = new SaveFileDialog
         {
             Title = T("RestorationSave"), Filter = "PNG (*.png)|*.png", DefaultExt = ".png", OverwritePrompt = false,
@@ -133,20 +149,15 @@ public partial class PhotoRestorationWindow : Window
     {
         using var request = new CancellationTokenSource();
         cancellation = request;
-        AdvancedOptions.IsEnabled = SaveButton.IsEnabled = DrawButton.IsEnabled = false;
-        PreviewButton.Visibility = Visibility.Collapsed;
-        CancelButton.Visibility = Progress.Visibility = Visibility.Visible;
+        UpdateActions(busy: true);
         CancelButton.IsEnabled = Progress.IsIndeterminate = true;
         StatusText.Text = T(status);
         job = RunOperationAsync();
         await job;
         job = null;
         cancellation = null;
-        AdvancedOptions.IsEnabled = !closing;
-        DrawButton.IsEnabled = !closing;
-        SaveButton.IsEnabled = !closing && preview is not null;
-        PreviewButton.Visibility = !closing && (preview is null || drewDetails) ? Visibility.Visible : Visibility.Collapsed;
-        CancelButton.Visibility = Progress.Visibility = Visibility.Collapsed;
+        if (preview is null) comparison.ClearResult();
+        UpdateActions(busy: false);
 
         async Task RunOperationAsync()
         {
@@ -154,6 +165,16 @@ public partial class PhotoRestorationWindow : Window
             catch (OperationCanceledException) when (request.IsCancellationRequested) { StatusText.Text = T("Canceled"); }
             catch (Exception ex) { StatusText.Text = T("RestorationError", ex.Message); }
         }
+    }
+
+    private void UpdateActions(bool busy)
+    {
+        MethodChoice.IsEnabled = AdvancedOptions.IsEnabled = !busy && !closing;
+        SaveButton.IsEnabled = !busy && !closing && preview is not null;
+        SaveButton.Visibility = SaveButton.IsEnabled ? Visibility.Visible : Visibility.Collapsed;
+        SaveButton.IsDefault = SaveButton.IsEnabled;
+        PreviewButton.Visibility = !busy && !closing && preview is null ? Visibility.Visible : Visibility.Collapsed;
+        CancelButton.Visibility = Progress.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void OnCancel(object sender, RoutedEventArgs e) => Cancel();

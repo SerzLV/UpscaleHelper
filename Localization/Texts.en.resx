@@ -9,18 +9,17 @@
   <data name="MainSubtitle" xml:space="preserve"><value>Upscale photos and videos by 2× or 4× on your PC.</value></data>
   <data name="CompareFiles" xml:space="preserve"><value>Compare files</value></data>
   <data name="CompareResult" xml:space="preserve"><value>Compare</value></data>
-  <data name="CompareResultTip" xml:space="preserve"><value>Compare the finished video with the original</value></data>
+  <data name="CompareResultTip" xml:space="preserve"><value>Compare the result with the original</value></data>
   <data name="ComparisonFileMissing" xml:space="preserve"><value>One of the files could not be found. Select it again.</value></data>
   <data name="CompareFilesTip" xml:space="preserve"><value>Open the original and the finished result (Ctrl+Shift+C)</value></data>
   <data name="AddFilesTip" xml:space="preserve"><value>Add files (Ctrl+O)</value></data>
   <data name="AddFiles" xml:space="preserve"><value>Add files</value></data>
   <data name="Remove" xml:space="preserve"><value>Remove</value></data>
-  <data name="RemoveTip" xml:space="preserve"><value>Remove the selected file from the queue (Delete)</value></data>
-  <data name="Queue" xml:space="preserve"><value>Queue</value></data>
+  <data name="RemoveTip" xml:space="preserve"><value>Remove from the list. The file stays on disk.</value></data>
   <data name="DropFiles" xml:space="preserve"><value>Drop files here</value></data>
   <data name="FileTypesHint" xml:space="preserve"><value>JPG, PNG, WebP, MP4, MKV, and more</value></data>
   <data name="FileQueue" xml:space="preserve"><value>File queue</value></data>
-  <data name="Reveal" xml:space="preserve"><value>Show file</value></data>
+  <data name="Reveal" xml:space="preserve"><value>Show in folder</value></data>
   <data name="RevealTip" xml:space="preserve"><value>Show the result in File Explorer</value></data>
   <data name="Details" xml:space="preserve"><value>Details</value></data>
   <data name="Retry" xml:space="preserve"><value>Retry</value></data>
@@ -96,7 +95,7 @@
   <data name="Start" xml:space="preserve"><value>Start</value></data>
   <data name="ClipDuration" xml:space="preserve"><value>Clip duration</value></data>
   <data name="SegmentHelp" xml:space="preserve"><value>Enter seconds or a time such as 1:23. The main window's upscale settings are used.</value></data>
-  <data name="Prepare" xml:space="preserve"><value>Prepare</value></data>
+  <data name="Prepare" xml:space="preserve"><value>Compare clip</value></data>
   <data name="PreparingComparison" xml:space="preserve"><value>Preparing video for comparison</value></data>
   <data name="FrameCountError" xml:space="preserve"><value>Could not determine the number of frames in the comparison.</value></data>
   <data name="InvalidPngFrame" xml:space="preserve"><value>FFmpeg returned a corrupt PNG frame.</value></data>
@@ -144,8 +143,8 @@
   <data name="MismatchedPair" xml:space="preserve"><value>Choose two photos or two videos to compare.</value></data>
   <data name="DistinctFiles" xml:space="preserve"><value>Choose two different files.</value></data>
   <data name="Ready" xml:space="preserve"><value>Ready</value></data>
-  <data name="RepeatSelected" xml:space="preserve"><value>Run selected again</value></data>
-  <data name="StartProcessing" xml:space="preserve"><value>Start processing</value></data>
+  <data name="RepeatSelected" xml:space="preserve"><value>Upscale again</value></data>
+  <data name="StartProcessing" xml:space="preserve"><value>Upscale files</value></data>
   <data name="FastHint" xml:space="preserve"><value>Waifu2x Photo for live-action footage. Scale: 2×.</value></data>
   <data name="AnimationHint" xml:space="preserve"><value>For anime, illustrations, and drawn frames.</value></data>
   <data name="DetailHint" xml:space="preserve"><value>Real-ESRGAN for photos and live-action footage.</value></data>
@@ -197,7 +196,7 @@
   <data name="ExportEstimateTip" xml:space="preserve"><value>Based on this sample and the current export settings. The size varies with the content of the full video.</value></data>
   <data name="MissingSource" xml:space="preserve"><value>The original file is unavailable. Check its folder or drive.</value></data>
   <data name="RecentPhotoComparisons" xml:space="preserve"><value>Recent photo comparisons</value></data>
-  <data name="CompressPhoto" xml:space="preserve"><value>Reduce photo size</value></data>
+  <data name="CompressPhoto" xml:space="preserve"><value>Compress photo</value></data>
   <data name="CompressPhotoShort" xml:space="preserve"><value>Compress</value></data>
   <data name="CompressionMode" xml:space="preserve"><value>Compression mode</value></data>
   <data name="CompressionLossless" xml:space="preserve"><value>Lossless WebP</value></data>
@@ -226,10 +225,16 @@
   <data name="CompressionInvalidWebp" xml:space="preserve"><value>The encoder returned an invalid WebP file.</value></data>
   <data name="RestorePhoto" xml:space="preserve"><value>Restore photo</value></data>
   <data name="RestorationMode" xml:space="preserve"><value>Restoration mode</value></data>
+  <data name="RestorationNatural" xml:space="preserve"><value>Natural enhancement</value></data>
+  <data name="RestorationNaturalHint" xml:space="preserve"><value>Reduces blur and noise.</value></data>
+  <data name="RestorationDrawHint" xml:space="preserve"><value>Generates new details and textures.</value></data>
+  <data name="RestorationExperimental" xml:space="preserve"><value>Experimental</value></data>
+  <data name="RestorationCorrection" xml:space="preserve"><value>Correction</value></data>
+  <data name="RestorationOutputSize" xml:space="preserve"><value>Output size</value></data>
   <data name="RestorationAutomatic" xml:space="preserve"><value>Automatic</value></data>
   <data name="RestorationAdvanced" xml:space="preserve"><value>Advanced settings</value></data>
   <data name="RestorationStart" xml:space="preserve"><value>Improve photo</value></data>
-  <data name="RestorationStartHint" xml:space="preserve"><value>Choose Improve photo to generate a preview.</value></data>
+  <data name="RestorationStartHint" xml:space="preserve"><value>Processed on this PC · Saved as a separate copy</value></data>
   <data name="RestorationFocus" xml:space="preserve"><value>Out of focus</value></data>
   <data name="RestorationMotion" xml:space="preserve"><value>Motion blur</value></data>
   <data name="RestorationNoise" xml:space="preserve"><value>Image noise</value></data>
@@ -254,4 +259,13 @@
   <data name="DrawingDetails" xml:space="preserve"><value>Drawing details on GPU…</value></data>
   <data name="DrawDetailsReady" xml:space="preserve"><value>DiffBIR preview ready. Use the wipe to inspect the generated details before saving.</value></data>
   <data name="DrawDetailsSizeLimit" xml:space="preserve"><value>Draw details supports photos up to 2 megapixels and 1,600 pixels on the longest side, with an aspect ratio of 4:1 or less.</value></data>
+  <data name="PickPhotoForTool" xml:space="preserve"><value>Choose a photo from disk</value></data>
+  <data name="PhotoImproveShort" xml:space="preserve"><value>Improve</value></data>
+  <data name="PhotoDrawShort" xml:space="preserve"><value>Draw details</value></data>
+  <data name="PhotoImproveFromRow" xml:space="preserve"><value>Open the photo to reduce blur and noise</value></data>
+  <data name="PhotoDrawFromRow" xml:space="preserve"><value>Open the photo in Draw details mode</value></data>
+  <data name="PhotoCompressFromRow" xml:space="preserve"><value>Open the photo to save a smaller WebP copy</value></data>
+  <data name="RemoveFromQueue" xml:space="preserve"><value>Remove file from list</value></data>
+  <data name="UseResult" xml:space="preserve"><value>Use the result</value></data>
+  <data name="ReplacePhoto" xml:space="preserve"><value>Replace</value></data>
 </root>

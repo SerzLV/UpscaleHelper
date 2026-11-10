@@ -72,6 +72,77 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="MinHeight" Value="46"/>
         </Style>
+        <Style x:Key="DialogPrimary" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="MinHeight" Value="38"/>
+            <Setter Property="Padding" Value="16,7"/>
+        </Style>
+        <Style x:Key="DialogButton" TargetType="Button" BasedOn="{StaticResource StudioButton}">
+            <Setter Property="MinHeight" Value="38"/>
+        </Style>
+        <Style x:Key="QuietButton" TargetType="Button" BasedOn="{StaticResource StudioButton}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        <Style x:Key="DialogHeading" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="DialogFooter" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            <Setter Property="Padding" Value="20,10,20,12"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="CanvasExpander" TargetType="Expander">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <StackPanel>
+                            <ToggleButton x:Name="HeaderSite" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Content="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="HeaderBorder" Background="{StaticResource InsetBrush}" BorderBrush="{StaticResource LineBrush}"
+                                                BorderThickness="1" CornerRadius="8" MinHeight="34" Padding="10,5" Cursor="Hand">
+                                            <DockPanel LastChildFill="True">
+                                                <Path x:Name="Chevron" DockPanel.Dock="Right" Data="M1,1 L5,5 9,1" Stroke="{TemplateBinding Foreground}"
+                                                      StrokeThickness="1.25" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                                <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                            </DockPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Chevron" Property="Data" Value="M1,5 L5,1 9,5"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="HeaderBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                                <Setter TargetName="HeaderBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="HeaderBorder" Property="Opacity" Value="0.42"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="Panel" Visibility="Collapsed"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="Panel" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="FlatList" TargetType="ListBox">
             <Setter Property="Background" Value="Transparent"/>

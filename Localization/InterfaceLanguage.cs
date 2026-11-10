@@ -16,7 +16,6 @@ internal sealed class InterfaceLanguage : IInterfaceLanguage
 {
     private readonly ResourceDictionary appResources;
     private readonly ISettingsStore settings;
-    private ResourceDictionary? dictionary;
 
     public InterfaceLanguage(ResourceDictionary appResources, ISettingsStore settings)
     {
@@ -57,13 +56,8 @@ internal sealed class InterfaceLanguage : IInterfaceLanguage
     {
         IsEnglish = english;
         Texts.UseLanguage(english);
-        var resources = new ResourceDictionary();
         foreach (DictionaryEntry entry in Texts.ResourceSet)
-            resources.Add(entry.Key, entry.Value);
-        resources.Add("UiLanguage", XmlLanguage.GetLanguage(Texts.Culture.IetfLanguageTag));
-        var merged = appResources.MergedDictionaries;
-        if (dictionary is null) merged.Add(resources);
-        else merged[merged.IndexOf(dictionary)] = resources;
-        dictionary = resources;
+            appResources[entry.Key] = entry.Value;
+        appResources["UiLanguage"] = XmlLanguage.GetLanguage(Texts.Culture.IetfLanguageTag);
     }
 }

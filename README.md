@@ -30,15 +30,15 @@ Photo compression requires an FFmpeg build with the `libwebp` encoder.
 
 1. Download and extract the Windows ZIP from [Releases](https://github.com/SerzLV/UpscaleHelper/releases).
 2. Open PowerShell in the extracted folder and run `./setup-engines.ps1` once. It downloads the pinned Real-ESRGAN and Waifu2x releases and verifies their SHA-256 checksums.
-3. Launch `UpscaleHelper.exe`, drop in files, choose a model and scale, and press **F5**. Results go into an `Upscaled` folder beside each source by default.
+3. Launch `UpscaleHelper.exe`, drop in files, choose a scale, and click **Upscale files** or press **F5**. The model and output folder are under **Advanced settings**. Results go into an `Upscaled` folder beside each source by default.
 
-Use **Ctrl+P** to preview a selected video and **Ctrl+Shift+C** to compare files you already have. In the video comparison window, **←** and **→** step through frames. The **RU / EN** switch is in the top bar.
+To continue working on a finished photo, choose **Improve**, **Draw details**, **Compress**, or **Compare** in its row. Use **Ctrl+P** to preview a selected video and **Ctrl+Shift+C** to compare files you already have. In the video comparison window, **←** and **→** step through frames. The **RU / EN** switch is in the top bar.
 
-Choose **Reduce photo size** in the top bar or **Compress** next to a finished photo. Generate a preview, compare it with the source, and save a WebP copy. In **Smaller WebP** mode, type a quality from 1 to 100 or adjust it with **− / +** or **↑ / ↓**.
+Click **Compress photo** in the toolbar to pick a file, or **Compress** in a photo row to use its latest result. Generate a preview, compare it with the source, and save a WebP copy. In **Smaller WebP** mode, type a quality from 1 to 100 or adjust it with **− / +** or **↑ / ↓**.
 
 ### Optional photo restoration
 
-Run `./setup-restoration.ps1` once from the app folder for CPU processing, or `./setup-restoration.ps1 -Device Nvidia` for CUDA. The script installs the [Restormer models](https://github.com/swz30/Restormer) and a private runtime under `%LocalAppData%\UpscaleHelper\restoration`. The NVIDIA download is several gigabytes. Once installed, choose **Restore photo**, select an image, and click **Improve photo**. The app chooses between defocus correction and noise reduction, then shows the preview with a wipe at the original resolution. Use **Advanced settings** to change the mode, strength, or scale before saving an 8-bit PNG copy. Restoration runs locally and accepts inputs up to 16 megapixels or 8,192 pixels per side, whichever limit is reached first.
+Run `./setup-restoration.ps1` once from the app folder for CPU processing, or `./setup-restoration.ps1 -Device Nvidia` for CUDA. The script installs the [Restormer models](https://github.com/swz30/Restormer) and a private runtime under `%LocalAppData%\UpscaleHelper\restoration`. The NVIDIA download is several gigabytes. Once installed, click **Improve photo** in the toolbar and choose an image, or click **Improve** in a photo row. In the restoration window, click **Improve photo** to start. The app chooses between defocus correction and noise reduction, then shows the preview with a wipe at the original resolution. Use **Advanced settings** to change the mode, strength, or scale before saving an 8-bit PNG copy. Restoration runs locally and accepts inputs up to 16 megapixels or 8,192 pixels per side, whichever limit is reached first.
 
 **Draw details** is an optional experimental mode powered by [DiffBIR](https://github.com/XPixelGroup/DiffBIR). Install it with `./setup-restoration.ps1 -Device Nvidia -Generative`. It needs CUDA and downloads about 6.7 GB of additional model weights. It synthesizes texture and can change fine details. Try it on photos up to 2 MP, with a longest side of 1,600 pixels and an aspect ratio of 4:1 or less.
 

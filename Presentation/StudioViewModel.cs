@@ -50,17 +50,11 @@ internal sealed class StudioViewModel : ObservableModel
         Comparison = new ComparisonViewModel(previews);
         AddCommand = new(() => AddFiles(dialogs.PickFiles()), () => CanEdit);
         CompareFilesCommand = new(async parameter => await CompareFilesAsync(parameter as QueueItem), _ => CanEdit);
-        CompressPhotoCommand = new(parameter =>
-        {
-            if (parameter is null) dialogs.ShowPhotoCompression(null);
-            else if (parameter is QueueItem { Kind: MediaKind.Image, State: JobState.Completed, Output: { } output })
-            {
-                if (File.Exists(output)) dialogs.ShowPhotoCompression(output);
-                else SetStatus("MissingResult");
-            }
-        }, _ => CanEdit);
-        RestorePhotoCommand = new(dialogs.ShowPhotoRestoration, () => CanEdit);
-        RemoveCommand = new(RemoveSelected, () => CanEdit && Selected is not null);
+        CompressPhotoCommand = new(parameter => OpenPhoto(parameter, dialogs.ShowPhotoCompression), CanOpenPhoto);
+        RestorePhotoCommand = new(parameter => OpenPhoto(parameter, source => dialogs.ShowPhotoRestoration(source, drawDetails: false)), CanOpenPhoto);
+        DrawDetailsCommand = new(parameter => OpenPhoto(parameter, source => dialogs.ShowPhotoRestoration(source, drawDetails: true)), CanOpenPhoto);
+        RemoveCommand = new(parameter => RemoveFile(parameter as QueueItem ?? Selected),
+            parameter => CanEdit && (parameter is QueueItem || Selected is not null));
         FolderCommand = new(ChooseFolder, () => CanEdit);
         ResetFolderCommand = new(() => Folder = null, () => CanEdit && Folder is not null);
         RevealCommand = new(parameter =>
@@ -90,6 +84,7 @@ internal sealed class StudioViewModel : ObservableModel
     public StudioCommand CompareFilesCommand { get; }
     public StudioCommand CompressPhotoCommand { get; }
     public StudioCommand RestorePhotoCommand { get; }
+    public StudioCommand DrawDetailsCommand { get; }
     public StudioCommand RemoveCommand { get; }
     public StudioCommand FolderCommand { get; }
     public StudioCommand ResetFolderCommand { get; }
@@ -116,7 +111,6 @@ internal sealed class StudioViewModel : ObservableModel
             if (Enum.IsDefined((VideoQuality)value) && Set(ref videoQuality, (VideoQuality)value)) SaveSettings();
         }
     }
-    public string CountLabel => Items.Count.ToString("D2");
     public string StartLabel => HasItems && !IsBusy && Items.All(item => item.State == JobState.Completed)
         ? T("RepeatSelected") : T("StartProcessing");
     public string ProgressLabel => Percent is { } value ? $"{value:0}%" : "—";
@@ -259,13 +253,31 @@ internal sealed class StudioViewModel : ObservableModel
 
     public void StopPreview() => Comparison.Cancel();
 
-    private void RemoveSelected()
+    private bool CanOpenPhoto(object? parameter) => CanEdit && (parameter is null or QueueItem { Kind: MediaKind.Image });
+
+    private void OpenPhoto(object? parameter, Action<string?> open)
     {
-        if (Selected is not { } item) return;
+        if (parameter is null)
+        {
+            open(null);
+            return;
+        }
+        if (parameter is not QueueItem { Kind: MediaKind.Image } item) return;
+        string? output = item.State == JobState.Completed ? item.Output : null;
+        string source = output ?? item.Path;
+        if (File.Exists(source)) open(source);
+        else SetStatus(output is null ? "MissingSource" : "MissingResult");
+    }
+
+    private void RemoveFile(QueueItem? item)
+    {
+        if (item is null) return;
         int index = Items.IndexOf(item);
-        Items.Remove(item);
+        if (index < 0) return;
+        bool wasSelected = Selected == item;
+        Items.RemoveAt(index);
         SaveQueue();
-        Selected = Items.Count > 0 ? Items[Math.Min(index, Items.Count - 1)] : null;
+        if (wasSelected) Selected = Items.Count > 0 ? Items[Math.Min(index, Items.Count - 1)] : null;
         if (!HasItems)
         {
             SetStatus("Ready");
@@ -370,13 +382,26 @@ internal sealed class StudioViewModel : ObservableModel
 
     private async Task CompareFilesAsync(QueueItem? item)
     {
-        FileComparison? initial = null;
-        if (item is not null)
+        if (item is { State: JobState.Completed, Output: { } output })
         {
-            if (item is not { Kind: MediaKind.Video, State: JobState.Completed, Output: { } output }) return;
-            initial = new(item.Path, output, MediaKind.Video, null);
+            if (!File.Exists(item.Path) || !File.Exists(output))
+            {
+                SetStatus("ComparisonFileMissing");
+                return;
+            }
+            var pair = new FileComparison(item.Path, output, item.Kind, null);
+            if (item.Kind == MediaKind.Image)
+            {
+                dialogs.ShowPhotoComparison(new ComparisonViewModel(previews), pair);
+                return;
+            }
+            if (dialogs.PickComparisonFiles(pair) is { } selected) await ComparePairAsync(selected);
         }
-        if (dialogs.PickComparisonFiles(initial) is not { } files) return;
+        else if (item is null && dialogs.PickComparisonFiles(null) is { } files) await ComparePairAsync(files);
+    }
+
+    private async Task ComparePairAsync(FileComparison files)
+    {
         if (files.Kind == MediaKind.Image)
         {
             dialogs.ShowPhotoComparison(new ComparisonViewModel(previews), files);
@@ -494,7 +519,6 @@ internal sealed class StudioViewModel : ObservableModel
     {
         Notify(nameof(HasItems));
         Notify(nameof(HasVideos));
-        Notify(nameof(CountLabel));
         Notify(nameof(StartLabel));
         StartCommand.Refresh();
     }
@@ -508,6 +532,7 @@ internal sealed class StudioViewModel : ObservableModel
         CompareFilesCommand.Refresh();
         CompressPhotoCommand.Refresh();
         RestorePhotoCommand.Refresh();
+        DrawDetailsCommand.Refresh();
         RemoveCommand.Refresh();
         FolderCommand.Refresh();
         ResetFolderCommand.Refresh();

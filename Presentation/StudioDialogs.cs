@@ -13,7 +13,7 @@ internal interface IStudioDialogs
     FileComparison? PickComparisonFiles(FileComparison? initial);
     void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files);
     void ShowPhotoCompression(string? source);
-    void ShowPhotoRestoration();
+    void ShowPhotoRestoration(string? source, bool drawDetails);
     void ShowComparison(ComparisonClip clip, string name);
     void ShowError(string name, string error);
     void Reveal(string path);
@@ -50,22 +50,30 @@ internal sealed class StudioDialogs(IVideoFrameProvider frames, IPreviewProvider
     }
 
     public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) =>
-        new PhotoComparisonWindow(comparison, files, history) { Owner = Application.Current.MainWindow }.ShowDialog();
+        new PhotoComparisonWindow(comparison, files, history, OpenRestoration, OpenCompression)
+        { Owner = Application.Current.MainWindow }.ShowDialog();
 
     public void ShowPhotoCompression(string? source)
     {
         var owner = Application.Current.MainWindow;
         source ??= PickPhoto(owner, T("CompressPhoto"));
         if (source is null) return;
-        new PhotoCompressionWindow(source, compressor, previews, history) { Owner = owner }.ShowDialog();
+        OpenCompression(owner, source);
     }
 
-    public void ShowPhotoRestoration()
+    public void ShowPhotoRestoration(string? source, bool drawDetails)
     {
         var owner = Application.Current.MainWindow;
-        if (PickPhoto(owner, T("RestorePhoto")) is not { } source) return;
-        new PhotoRestorationWindow(source, restorer, previews, history) { Owner = owner }.ShowDialog();
+        source ??= PickPhoto(owner, T(drawDetails ? "DrawDetails" : "RestorationStart"));
+        if (source is null) return;
+        OpenRestoration(owner, source, drawDetails);
     }
+
+    private void OpenCompression(Window owner, string source) =>
+        new PhotoCompressionWindow(source, compressor, previews, history) { Owner = owner }.ShowDialog();
+
+    private void OpenRestoration(Window owner, string source, bool drawDetails) =>
+        new PhotoRestorationWindow(source, restorer, previews, history, drawDetails) { Owner = owner }.ShowDialog();
 
     internal static string? PickPhoto(Window owner, string title, string? current = null)
     {

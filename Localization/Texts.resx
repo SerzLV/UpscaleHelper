@@ -9,18 +9,17 @@
   <data name="MainSubtitle" xml:space="preserve"><value>Увеличивайте разрешение в 2 или 4 раза на своём ПК.</value></data>
   <data name="CompareFiles" xml:space="preserve"><value>Сравнить файлы</value></data>
   <data name="CompareResult" xml:space="preserve"><value>Сравнить</value></data>
-  <data name="CompareResultTip" xml:space="preserve"><value>Сравнить готовое видео с оригиналом</value></data>
+  <data name="CompareResultTip" xml:space="preserve"><value>Сравнить результат с оригиналом</value></data>
   <data name="ComparisonFileMissing" xml:space="preserve"><value>Один из файлов больше не найден. Выберите его снова.</value></data>
   <data name="CompareFilesTip" xml:space="preserve"><value>Открыть оригинал и готовый результат (Ctrl+Shift+C)</value></data>
   <data name="AddFilesTip" xml:space="preserve"><value>Добавить файлы (Ctrl+O)</value></data>
   <data name="AddFiles" xml:space="preserve"><value>Добавить файлы</value></data>
   <data name="Remove" xml:space="preserve"><value>Убрать</value></data>
-  <data name="RemoveTip" xml:space="preserve"><value>Убрать выбранный файл из очереди (Delete)</value></data>
-  <data name="Queue" xml:space="preserve"><value>Очередь</value></data>
+  <data name="RemoveTip" xml:space="preserve"><value>Убрать из списка. Файл останется на диске.</value></data>
   <data name="DropFiles" xml:space="preserve"><value>Перетащите сюда файлы</value></data>
   <data name="FileTypesHint" xml:space="preserve"><value>JPG, PNG, WebP, MP4, MKV и другие</value></data>
   <data name="FileQueue" xml:space="preserve"><value>Очередь файлов</value></data>
-  <data name="Reveal" xml:space="preserve"><value>Показать</value></data>
+  <data name="Reveal" xml:space="preserve"><value>В папке</value></data>
   <data name="RevealTip" xml:space="preserve"><value>Показать результат в проводнике</value></data>
   <data name="Details" xml:space="preserve"><value>Подробнее</value></data>
   <data name="Retry" xml:space="preserve"><value>Повторить</value></data>
@@ -96,7 +95,7 @@
   <data name="Start" xml:space="preserve"><value>Начало</value></data>
   <data name="ClipDuration" xml:space="preserve"><value>Длительность фрагмента</value></data>
   <data name="SegmentHelp" xml:space="preserve"><value>Введите секунды или время, например 1:23. Используются настройки апскейла из основного окна.</value></data>
-  <data name="Prepare" xml:space="preserve"><value>Подготовить</value></data>
+  <data name="Prepare" xml:space="preserve"><value>Сравнить фрагмент</value></data>
   <data name="PreparingComparison" xml:space="preserve"><value>Подготовка видео для сравнения</value></data>
   <data name="FrameCountError" xml:space="preserve"><value>Не удалось определить число кадров в пробном фрагменте.</value></data>
   <data name="InvalidPngFrame" xml:space="preserve"><value>FFmpeg вернул повреждённый PNG-кадр.</value></data>
@@ -144,8 +143,8 @@
   <data name="MismatchedPair" xml:space="preserve"><value>Для сравнения выберите два фото или два видео.</value></data>
   <data name="DistinctFiles" xml:space="preserve"><value>Выберите два разных файла.</value></data>
   <data name="Ready" xml:space="preserve"><value>Готов к работе</value></data>
-  <data name="RepeatSelected" xml:space="preserve"><value>Повторить выбранный</value></data>
-  <data name="StartProcessing" xml:space="preserve"><value>Начать обработку</value></data>
+  <data name="RepeatSelected" xml:space="preserve"><value>Увеличить повторно</value></data>
+  <data name="StartProcessing" xml:space="preserve"><value>Увеличить файлы</value></data>
   <data name="FastHint" xml:space="preserve"><value>Waifu2x Photo для реальной съёмки. Масштаб 2×.</value></data>
   <data name="AnimationHint" xml:space="preserve"><value>Для аниме, иллюстраций и рисованных кадров.</value></data>
   <data name="DetailHint" xml:space="preserve"><value>Real-ESRGAN для фотографий и реальной съёмки.</value></data>
@@ -197,7 +196,7 @@
   <data name="ExportEstimateTip" xml:space="preserve"><value>Оценка по этому фрагменту и текущим настройкам экспорта. Итоговый размер зависит от содержания всего видео.</value></data>
   <data name="MissingSource" xml:space="preserve"><value>Исходный файл недоступен. Проверь его папку или диск.</value></data>
   <data name="RecentPhotoComparisons" xml:space="preserve"><value>Недавние сравнения фото</value></data>
-  <data name="CompressPhoto" xml:space="preserve"><value>Уменьшить размер</value></data>
+  <data name="CompressPhoto" xml:space="preserve"><value>Сжать фото</value></data>
   <data name="CompressPhotoShort" xml:space="preserve"><value>Сжать</value></data>
   <data name="CompressionMode" xml:space="preserve"><value>Режим сжатия</value></data>
   <data name="CompressionLossless" xml:space="preserve"><value>WebP без потерь</value></data>
@@ -226,10 +225,16 @@
   <data name="CompressionInvalidWebp" xml:space="preserve"><value>Кодировщик вернул некорректный файл WebP.</value></data>
   <data name="RestorePhoto" xml:space="preserve"><value>Восстановление фото</value></data>
   <data name="RestorationMode" xml:space="preserve"><value>Вид восстановления</value></data>
+  <data name="RestorationNatural" xml:space="preserve"><value>Естественное улучшение</value></data>
+  <data name="RestorationNaturalHint" xml:space="preserve"><value>Уменьшает размытие и шум.</value></data>
+  <data name="RestorationDrawHint" xml:space="preserve"><value>Создаёт новые детали и текстуры.</value></data>
+  <data name="RestorationExperimental" xml:space="preserve"><value>Эксперимент</value></data>
+  <data name="RestorationCorrection" xml:space="preserve"><value>Коррекция</value></data>
+  <data name="RestorationOutputSize" xml:space="preserve"><value>Размер результата</value></data>
   <data name="RestorationAutomatic" xml:space="preserve"><value>Автоматически</value></data>
   <data name="RestorationAdvanced" xml:space="preserve"><value>Дополнительные настройки</value></data>
   <data name="RestorationStart" xml:space="preserve"><value>Улучшить фото</value></data>
-  <data name="RestorationStartHint" xml:space="preserve"><value>Нажми «Улучшить фото», чтобы создать предпросмотр.</value></data>
+  <data name="RestorationStartHint" xml:space="preserve"><value>Обработка на этом ПК · Результат сохраняется отдельной копией</value></data>
   <data name="RestorationFocus" xml:space="preserve"><value>Расфокус</value></data>
   <data name="RestorationMotion" xml:space="preserve"><value>Смаз от движения</value></data>
   <data name="RestorationNoise" xml:space="preserve"><value>Шум на фото</value></data>
@@ -254,4 +259,13 @@
   <data name="DrawingDetails" xml:space="preserve"><value>Дорисовываем детали на GPU…</value></data>
   <data name="DrawDetailsReady" xml:space="preserve"><value>Предпросмотр DiffBIR готов. Проверь дорисованные детали через шторку перед сохранением.</value></data>
   <data name="DrawDetailsSizeLimit" xml:space="preserve"><value>Для дорисовки подходят фото до 2 Мп, до 1 600 пикселей по длинной стороне и с пропорциями не вытянутее 4:1.</value></data>
+  <data name="PickPhotoForTool" xml:space="preserve"><value>Выбрать фото с диска</value></data>
+  <data name="PhotoImproveShort" xml:space="preserve"><value>Улучшить</value></data>
+  <data name="PhotoDrawShort" xml:space="preserve"><value>Дорисовать</value></data>
+  <data name="PhotoImproveFromRow" xml:space="preserve"><value>Открыть фото для коррекции размытия и шума</value></data>
+  <data name="PhotoDrawFromRow" xml:space="preserve"><value>Открыть фото в режиме «Дорисовать детали»</value></data>
+  <data name="PhotoCompressFromRow" xml:space="preserve"><value>Открыть фото для сохранения компактной копии WebP</value></data>
+  <data name="RemoveFromQueue" xml:space="preserve"><value>Убрать файл из списка</value></data>
+  <data name="UseResult" xml:space="preserve"><value>Действия с результатом</value></data>
+  <data name="ReplacePhoto" xml:space="preserve"><value>Заменить</value></data>
 </root>

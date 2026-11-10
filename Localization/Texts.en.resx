@@ -196,4 +196,32 @@
   <data name="ExportEstimate" xml:space="preserve"><value>Estimated full export size · ≈ {0}</value></data>
   <data name="ExportEstimateTip" xml:space="preserve"><value>Based on this sample and the current export settings. The size varies with the content of the full video.</value></data>
   <data name="MissingSource" xml:space="preserve"><value>The original file is unavailable. Check its folder or drive.</value></data>
+  <data name="RecentPhotoComparisons" xml:space="preserve"><value>Recent photo comparisons</value></data>
+  <data name="CompressPhoto" xml:space="preserve"><value>Reduce photo size</value></data>
+  <data name="CompressPhotoShort" xml:space="preserve"><value>Compress</value></data>
+  <data name="CompressionMode" xml:space="preserve"><value>Compression mode</value></data>
+  <data name="CompressionLossless" xml:space="preserve"><value>Lossless WebP</value></data>
+  <data name="CompressionLosslessTip" xml:space="preserve"><value>Preserves visible pixels in 8-bit photos. Hidden colors in fully transparent pixels can change.</value></data>
+  <data name="CompressionSmaller" xml:space="preserve"><value>Smaller WebP</value></data>
+  <data name="CompressionQuality" xml:space="preserve"><value>Quality</value></data>
+  <data name="CompressionQualityDown" xml:space="preserve"><value>Decrease quality by 1</value></data>
+  <data name="CompressionQualityUp" xml:space="preserve"><value>Increase quality by 1</value></data>
+  <data name="CompressionQualityRange" xml:space="preserve"><value>Enter a whole number from 1 to 100.</value></data>
+  <data name="CompressionPreview" xml:space="preserve"><value>Generate preview</value></data>
+  <data name="CompressionHint" xml:space="preserve"><value>Generate a preview to compare the image and file size before saving a WebP copy.</value></data>
+  <data name="CompressionRegenerate" xml:space="preserve"><value>Generate a new preview to apply these settings.</value></data>
+  <data name="CompressingPhoto" xml:space="preserve"><value>Compressing photo…</value></data>
+  <data name="CompressionSavedPercent" xml:space="preserve"><value>{0:P0} smaller than the original.</value></data>
+  <data name="CompressionNotSmaller" xml:space="preserve"><value>This WebP is at least as large as the original. Try Smaller WebP for a smaller copy.</value></data>
+  <data name="CompressionPreviewReady" xml:space="preserve"><value>Preview ready.</value></data>
+  <data name="CompressionSave" xml:space="preserve"><value>Save WebP copy</value></data>
+  <data name="CompressionSaving" xml:space="preserve"><value>Saving copy…</value></data>
+  <data name="CompressionSaved" xml:space="preserve"><value>Saved · {0}</value></data>
+  <data name="CompressionWebpExtension" xml:space="preserve"><value>Save the copy with a .webp extension.</value></data>
+  <data name="CompressionDestinationExists" xml:space="preserve"><value>A file with that name already exists. Choose a new name for the copy.</value></data>
+  <data name="CompressionError" xml:space="preserve"><value>Could not complete photo compression. {0}</value></data>
+  <data name="CompressionSizeLimit" xml:space="preserve"><value>Photo compression supports up to 40 megapixels and 16,383 pixels per side.</value></data>
+  <data name="CompressionBitDepthLimit" xml:space="preserve"><value>Lossless WebP supports up to 8 bits per channel. Keep the original or use Smaller WebP.</value></data>
+  <data name="CompressionIccUnsupported" xml:space="preserve"><value>This color profile cannot be copied into the WebP file.</value></data>
+  <data name="CompressionInvalidWebp" xml:space="preserve"><value>The encoder returned an invalid WebP file.</value></data>
 </root>

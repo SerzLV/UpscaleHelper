@@ -66,6 +66,8 @@
                     <TextBlock Text="{DynamicResource MainSubtitle}" Style="{StaticResource MutedText}"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Button Style="{StaticResource StudioButton}" Content="{DynamicResource CompressPhoto}" Padding="14,9" Margin="0,0,8,0"
+                            Command="{Binding CompressPhotoCommand}"/>
                     <Button Style="{StaticResource StudioButton}" Content="{DynamicResource CompareFiles}" Padding="14,9" Margin="0,0,8,0"
                             Command="{Binding CompareFilesCommand}" ToolTip="{DynamicResource CompareFilesTip}"/>
                     <Button Style="{StaticResource StudioButton}" Command="{Binding AddCommand}"
@@ -173,6 +175,24 @@
                                                                     <MultiDataTrigger>
                                                                         <MultiDataTrigger.Conditions>
                                                                             <Condition Binding="{Binding Kind}" Value="Video"/>
+                                                                            <Condition Binding="{Binding State}" Value="Completed"/>
+                                                                        </MultiDataTrigger.Conditions>
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </MultiDataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                    <Button Content="{DynamicResource CompressPhotoShort}" ToolTip="{DynamicResource CompressPhoto}"
+                                                            Command="{Binding DataContext.CompressPhotoCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                            CommandParameter="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource RowAction}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <MultiDataTrigger>
+                                                                        <MultiDataTrigger.Conditions>
+                                                                            <Condition Binding="{Binding Kind}" Value="Image"/>
                                                                             <Condition Binding="{Binding State}" Value="Completed"/>
                                                                         </MultiDataTrigger.Conditions>
                                                                         <Setter Property="Visibility" Value="Visible"/>

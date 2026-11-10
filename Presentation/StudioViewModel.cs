@@ -50,6 +50,15 @@ internal sealed class StudioViewModel : ObservableModel
         Comparison = new ComparisonViewModel(previews);
         AddCommand = new(() => AddFiles(dialogs.PickFiles()), () => CanEdit);
         CompareFilesCommand = new(async parameter => await CompareFilesAsync(parameter as QueueItem), _ => CanEdit);
+        CompressPhotoCommand = new(parameter =>
+        {
+            if (parameter is null) dialogs.ShowPhotoCompression(null);
+            else if (parameter is QueueItem { Kind: MediaKind.Image, State: JobState.Completed, Output: { } output })
+            {
+                if (File.Exists(output)) dialogs.ShowPhotoCompression(output);
+                else SetStatus("MissingResult");
+            }
+        }, _ => CanEdit);
         RemoveCommand = new(RemoveSelected, () => CanEdit && Selected is not null);
         FolderCommand = new(ChooseFolder, () => CanEdit);
         ResetFolderCommand = new(() => Folder = null, () => CanEdit && Folder is not null);
@@ -78,6 +87,7 @@ internal sealed class StudioViewModel : ObservableModel
     public ComparisonViewModel Comparison { get; }
     public StudioCommand AddCommand { get; }
     public StudioCommand CompareFilesCommand { get; }
+    public StudioCommand CompressPhotoCommand { get; }
     public StudioCommand RemoveCommand { get; }
     public StudioCommand FolderCommand { get; }
     public StudioCommand ResetFolderCommand { get; }
@@ -494,6 +504,7 @@ internal sealed class StudioViewModel : ObservableModel
         Notify(nameof(StartLabel));
         AddCommand.Refresh();
         CompareFilesCommand.Refresh();
+        CompressPhotoCommand.Refresh();
         RemoveCommand.Refresh();
         FolderCommand.Refresh();
         ResetFolderCommand.Refresh();

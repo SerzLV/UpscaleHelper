@@ -196,4 +196,32 @@
   <data name="ExportEstimate" xml:space="preserve"><value>Примерный размер полного видео · ≈ {0}</value></data>
   <data name="ExportEstimateTip" xml:space="preserve"><value>Оценка по этому фрагменту и текущим настройкам экспорта. Итоговый размер зависит от содержания всего видео.</value></data>
   <data name="MissingSource" xml:space="preserve"><value>Исходный файл недоступен. Проверь его папку или диск.</value></data>
+  <data name="RecentPhotoComparisons" xml:space="preserve"><value>Недавние сравнения фото</value></data>
+  <data name="CompressPhoto" xml:space="preserve"><value>Уменьшить размер</value></data>
+  <data name="CompressPhotoShort" xml:space="preserve"><value>Сжать</value></data>
+  <data name="CompressionMode" xml:space="preserve"><value>Режим сжатия</value></data>
+  <data name="CompressionLossless" xml:space="preserve"><value>WebP без потерь</value></data>
+  <data name="CompressionLosslessTip" xml:space="preserve"><value>Сохраняет видимые пиксели 8-битного фото. Скрытые цвета полностью прозрачных пикселей могут измениться.</value></data>
+  <data name="CompressionSmaller" xml:space="preserve"><value>Меньше файл</value></data>
+  <data name="CompressionQuality" xml:space="preserve"><value>Качество</value></data>
+  <data name="CompressionQualityDown" xml:space="preserve"><value>Уменьшить качество на 1</value></data>
+  <data name="CompressionQualityUp" xml:space="preserve"><value>Увеличить качество на 1</value></data>
+  <data name="CompressionQualityRange" xml:space="preserve"><value>Введи целое число от 1 до 100.</value></data>
+  <data name="CompressionPreview" xml:space="preserve"><value>Создать предпросмотр</value></data>
+  <data name="CompressionHint" xml:space="preserve"><value>Создай предпросмотр, чтобы сравнить картинку и размер файла перед сохранением копии в WebP.</value></data>
+  <data name="CompressionRegenerate" xml:space="preserve"><value>Создай новый предпросмотр, чтобы применить эти настройки.</value></data>
+  <data name="CompressingPhoto" xml:space="preserve"><value>Сжимаем фото…</value></data>
+  <data name="CompressionSavedPercent" xml:space="preserve"><value>На {0:P0} меньше исходного файла.</value></data>
+  <data name="CompressionNotSmaller" xml:space="preserve"><value>Этот WebP получился таким же по размеру или больше исходника. Попробуй режим «Меньше файл».</value></data>
+  <data name="CompressionPreviewReady" xml:space="preserve"><value>Предпросмотр готов.</value></data>
+  <data name="CompressionSave" xml:space="preserve"><value>Сохранить копию WebP</value></data>
+  <data name="CompressionSaving" xml:space="preserve"><value>Сохраняем копию…</value></data>
+  <data name="CompressionSaved" xml:space="preserve"><value>Сохранено · {0}</value></data>
+  <data name="CompressionWebpExtension" xml:space="preserve"><value>Сохрани копию с расширением .webp.</value></data>
+  <data name="CompressionDestinationExists" xml:space="preserve"><value>Файл с таким именем уже есть. Выбери другое имя для копии.</value></data>
+  <data name="CompressionError" xml:space="preserve"><value>Не удалось завершить сжатие фото. {0}</value></data>
+  <data name="CompressionSizeLimit" xml:space="preserve"><value>Для сжатия фото поддерживаются изображения до 40 Мп и 16 383 пикселей по стороне.</value></data>
+  <data name="CompressionBitDepthLimit" xml:space="preserve"><value>WebP без потерь поддерживает до 8 бит на канал. Сохрани исходник или выбери режим «Меньше файл».</value></data>
+  <data name="CompressionIccUnsupported" xml:space="preserve"><value>Этот цветовой профиль нельзя перенести в WebP.</value></data>
+  <data name="CompressionInvalidWebp" xml:space="preserve"><value>Кодировщик вернул некорректный файл WebP.</value></data>
 </root>

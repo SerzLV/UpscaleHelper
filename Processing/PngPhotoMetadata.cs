@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.IO.Compression;
 using System.Text;
 
 namespace UpscaleHelper.Processing;
@@ -14,6 +15,40 @@ internal static class PngPhotoMetadata
     {
         using var stream = File.OpenRead(path);
         return ReadDimensions(stream);
+    }
+
+    public static int BitDepth(string path)
+    {
+        using var stream = File.OpenRead(path);
+        _ = ReadDimensions(stream);
+        return stream.ReadByte();
+    }
+
+    public static (byte[]? Icc, byte[]? Exif) ReadWebpMetadata(string path, int width, int height, CancellationToken token)
+    {
+        var chunks = ReadMetadata(path, width, height, token);
+        byte[]? profile = chunks.Find(chunk => chunk.Type == "iCCP").Data;
+        byte[]? exif = chunks.Find(chunk => chunk.Type == "eXIf").Data;
+        if (profile is null) return (null, exif);
+
+        int endOfName = Array.IndexOf(profile, (byte)0);
+        if (endOfName < 1 || endOfName + 2 >= profile.Length || profile[endOfName + 1] != 0)
+            throw new InvalidDataException(T("CompressionIccUnsupported"));
+        using var compressed = new MemoryStream(profile, endOfName + 2, profile.Length - endOfName - 2);
+        using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
+        using var raw = new MemoryStream();
+        byte[] buffer = new byte[16 * 1024];
+        int count;
+        while ((count = zlib.Read(buffer)) > 0)
+        {
+            token.ThrowIfCancellationRequested();
+            if (raw.Length + count > MaxMetadataBytes) throw new InvalidDataException(T("CompressionIccUnsupported"));
+            raw.Write(buffer, 0, count);
+        }
+        byte[] icc = raw.ToArray();
+        if (icc.Length < 128 || !icc.AsSpan(16, 4).SequenceEqual("RGB "u8))
+            throw new InvalidDataException(T("CompressionIccUnsupported"));
+        return (icc, exif);
     }
 
     public static void Restore(string source, string result, CancellationToken token)

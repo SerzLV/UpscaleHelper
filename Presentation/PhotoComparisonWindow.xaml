@@ -8,7 +8,32 @@
     <DockPanel Margin="20">
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
             <TextBlock Text="{DynamicResource ReadyPhotoComparison}" FontSize="22" FontWeight="SemiBold"/>
-            <TextBlock x:Name="FileLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
+                            Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseOriginal}"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}"/>
+                        <TextBlock x:Name="OriginalLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel Grid.Column="2">
+                    <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickEnhanced"
+                            Margin="8,0,0,0" AutomationProperties.Name="{DynamicResource ChooseEnhanced}"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource ResultTag}" Style="{StaticResource Eyebrow}"/>
+                        <TextBlock x:Name="EnhancedLabel" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
+            <DockPanel Margin="0,8,0,0">
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource RecentPhotoComparisons}" Style="{StaticResource MutedText}"
+                           Margin="0,0,9,0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="RecentPairs" DisplayMemberPath="Caption" MinHeight="30" SelectionChanged="OnRecentSelected"
+                          AutomationProperties.Name="{DynamicResource RecentPhotoComparisons}"/>
+            </DockPanel>
+            <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Foreground="#FF9DAB"/>
         </StackPanel>
         <Button DockPanel.Dock="Bottom" Content="{DynamicResource Close}" IsCancel="True" HorizontalAlignment="Right"
                 Style="{StaticResource StudioButton}" Margin="0,11,0,0"/>

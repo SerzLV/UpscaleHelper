@@ -15,9 +15,11 @@ public partial class CompareFilesWindow : Window
     private string? original;
     private string? enhanced;
 
-    internal CompareFilesWindow(FileComparison? initial)
+    internal CompareFilesWindow(FileComparison? initial, FileComparison[] recent)
     {
         InitializeComponent();
+        HistoryPanel.Visibility = recent.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+        RecentPairs.ItemsSource = recent;
         if (initial is null) return;
         SetFile(true, initial.Original);
         SetFile(false, initial.Enhanced);
@@ -28,6 +30,14 @@ public partial class CompareFilesWindow : Window
 
     private void OnPickOriginal(object sender, RoutedEventArgs e) => PickFile(true);
     private void OnPickEnhanced(object sender, RoutedEventArgs e) => PickFile(false);
+
+    private void OnRecentSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (RecentPairs.SelectedItem is not FileComparison pair) return;
+        SetFile(true, pair.Original);
+        SetFile(false, pair.Enhanced);
+        ValidatePair();
+    }
 
     private void PickFile(bool isOriginal)
     {
@@ -44,6 +54,7 @@ public partial class CompareFilesWindow : Window
             InitialDirectory = directory ?? ""
         };
         if (dialog.ShowDialog(this) != true) return;
+        RecentPairs.SelectedIndex = -1;
         SetFile(isOriginal, dialog.FileName);
         ValidatePair();
     }

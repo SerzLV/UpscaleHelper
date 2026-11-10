@@ -80,9 +80,9 @@ internal sealed class MediaTools(ToolPaths paths, ToolRunner runner) : IPreviewP
         return new(bytes.ToArray(), width, height);
     }
 
-    public Task NormalizeImageAsync(string source, string target, CancellationToken token) =>
+    public Task NormalizeImageAsync(string source, string target, CancellationToken token, bool preserveBitDepth = false) =>
         RunAsync(["-i", source, "-map", "0:V:0", "-frames:v", "1", "-c:v", "png",
-            "-pix_fmt", "rgba", "-threads", "1", "-update", "1", target], token);
+            .. (preserveBitDepth ? Array.Empty<string>() : ["-pix_fmt", "rgba"]), "-threads", "1", "-update", "1", target], token);
 
     public Task ResizeImageAsync(string source, string target, CancellationToken token) =>
         RunAsync(["-i", source, "-frames:v", "1", "-vf", "scale=iw/2:ih/2:flags=lanczos",

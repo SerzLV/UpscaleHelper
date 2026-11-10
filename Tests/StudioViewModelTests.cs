@@ -120,6 +120,7 @@ public class StudioViewModelTests
             return null;
         }
         public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) => throw new NotSupportedException();
+        public void ShowPhotoCompression(string? source) => throw new NotSupportedException();
         public void ShowComparison(ComparisonClip clip, string name) => throw new NotSupportedException();
         public void ShowError(string name, string error) => throw new NotSupportedException();
         public void Reveal(string path) => throw new NotSupportedException();

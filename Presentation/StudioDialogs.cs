@@ -12,12 +12,14 @@ internal interface IStudioDialogs
     VideoSegment? PickSegment(string name, VideoSegment? previous);
     FileComparison? PickComparisonFiles(FileComparison? initial);
     void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files);
+    void ShowPhotoCompression(string? source);
     void ShowComparison(ComparisonClip clip, string name);
     void ShowError(string name, string error);
     void Reveal(string path);
 }
 
-internal sealed class StudioDialogs(IVideoFrameProvider frames) : IStudioDialogs
+internal sealed class StudioDialogs(IVideoFrameProvider frames, IPreviewProvider previews,
+    IPhotoCompressor compressor, PhotoComparisonHistory history) : IStudioDialogs
 {
     public string[] PickFiles()
     {
@@ -42,12 +44,30 @@ internal sealed class StudioDialogs(IVideoFrameProvider frames) : IStudioDialogs
 
     public FileComparison? PickComparisonFiles(FileComparison? initial)
     {
-        var dialog = new CompareFilesWindow(initial) { Owner = Application.Current.MainWindow };
+        var dialog = new CompareFilesWindow(initial, history.Available()) { Owner = Application.Current.MainWindow };
         return dialog.ShowDialog() == true ? dialog.Comparison : null;
     }
 
     public void ShowPhotoComparison(ComparisonViewModel comparison, FileComparison files) =>
-        new PhotoComparisonWindow(comparison, files) { Owner = Application.Current.MainWindow }.ShowDialog();
+        new PhotoComparisonWindow(comparison, files, history) { Owner = Application.Current.MainWindow }.ShowDialog();
+
+    public void ShowPhotoCompression(string? source)
+    {
+        var owner = Application.Current.MainWindow;
+        source ??= PickPhoto(owner, T("CompressPhoto"));
+        if (source is null) return;
+        new PhotoCompressionWindow(source, compressor, previews, history) { Owner = owner }.ShowDialog();
+    }
+
+    internal static string? PickPhoto(Window owner, string title, string? current = null)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = title, Filter = SupportedMedia.PhotoFilter,
+            InitialDirectory = Path.GetDirectoryName(current) ?? ""
+        };
+        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
+    }
 
     public void ShowError(string name, string error) =>
         new JobErrorWindow(name, error) { Owner = Application.Current.MainWindow }.ShowDialog();

@@ -29,6 +29,8 @@ public sealed record PreviewFrame(byte[] Png, int NativeWidth, int NativeHeight)
 
 public static class SupportedMedia
 {
+    public static string PhotoFilter => $"{T("PhotoComparison")}|*.jpg;*.jpeg;*.png;*.webp";
+
     public static string Filter =>
         $"{T("PhotosAndVideos")}|*.jpg;*.jpeg;*.png;*.webp;*.mp4;*.mkv;*.mov;*.webm;*.avi;*.m4v|{T("AllFiles")}|*.*";
 

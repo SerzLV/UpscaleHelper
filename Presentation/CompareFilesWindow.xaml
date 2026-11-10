@@ -7,6 +7,11 @@
     <StackPanel Margin="22">
         <TextBlock Text="{DynamicResource CompareReadyFiles}" FontSize="24" FontWeight="SemiBold"/>
         <TextBlock Text="{DynamicResource ChoosePair}" Style="{StaticResource MutedText}" Margin="0,4,0,17"/>
+        <StackPanel x:Name="HistoryPanel" Margin="0,0,0,12">
+            <TextBlock Text="{DynamicResource RecentPhotoComparisons}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+            <ComboBox x:Name="RecentPairs" DisplayMemberPath="Caption" MinHeight="34" SelectionChanged="OnRecentSelected"
+                      AutomationProperties.Name="{DynamicResource RecentPhotoComparisons}"/>
+        </StackPanel>
         <TextBlock Text="{DynamicResource OriginalTag}" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
         <DockPanel Margin="0,0,0,12">
             <Button DockPanel.Dock="Right" Content="{DynamicResource Browse}" Style="{StaticResource StudioButton}" Click="OnPickOriginal"
